@@ -28,8 +28,7 @@ if (exists('src')) {
         src <- strsplit(src, '\n')[[1]]
         
         ## look for plots
-        #img <- tempfile(tmpdir = '/var/www/cache')
-        img <- tempfile(tmpdir = '/srv/http/sandbox/cache')
+        img <- tempfile(tmpdir = '/var/www/cache')
         png(img)
         
         ## eval!
