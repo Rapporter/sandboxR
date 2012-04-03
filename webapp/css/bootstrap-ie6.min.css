@@ -1,0 +1,7 @@
+@charset 'UTF-8';
+.navbar-fixed-top{position:absolute;}
+.navbar .nav li{display:block;float:left;}
+.navbar .nav li a{display:block;padding:10px 10px 11px;line-height:19px;color:#fff;}
+.span1,.span2,.span3,.span4,.span5,.span6,.span7,.span8,.span9,.span10,.span11,.span12{display:inline;float:left;margin-left:20px;}
+.modal{position:absolute;top:50%;filter:none;}
+input{width:auto;}

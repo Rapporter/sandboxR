@@ -1,0 +1,59 @@
+###################################################################################################
+## DISCLAIMER (daroczig - 2012)
+###################################################################################################
+## This small script is not intended to be used in a real web application.
+## I am aware of the fact that error handling should be addressed a lot clever way, custom
+## environments should be set up etc.
+## BUT: please do not forget, this is just a lame frontend to test sandboxR :)
+###################################################################################################
+
+## get source
+if (is.null(POST$src)) {
+    if (is.null(GET$src)) {
+        cat('No source provided :(')
+    } else {
+        src <- GET$src
+    }
+} else {
+    src <- POST$src
+}
+
+if (exists('src')) {
+   
+        src <- URLdecode(src)
+        
+        ## log calls
+        log <- paste(format(Sys.time(), '%Y-%m-%d %X'), SERVER$remote_ip, gsub('\n', '|', src), sep = '\t') 
+        
+        src <- strsplit(src, '\n')[[1]]
+        
+        ## look for plots
+        #img <- tempfile(tmpdir = '/var/www/cache')
+        img <- tempfile(tmpdir = '/srv/http/sandbox/cache')
+        png(img)
+        
+        ## eval!
+        res <- tryCatch(sandbox(src), error = function(e) e)
+        
+        ## stop graphics device
+        img.exists <- !is.na(file.info(img)$size)
+        dev.off()
+        
+        ## return
+        if (any(class(res) == 'error')) {
+            cat('ERROR', log, file = '/var/log/sandboxR.log', append = TRUE)
+            cat('<pre><span style="color: red; font-weight: bold;">', res[[1]] ,'</span></pre>')
+            cat('\t', res[[1]], '\n', file = '/var/log/sandboxR.log', append = TRUE)
+        } else {
+            cat('OK', log, file = '/var/log/sandboxR.log', append = TRUE)
+            res <- paste(capture.output(res), collapse = '\n')
+            cat('<h4>Last returned value:</h4><pre>', res, '</pre>', sep ='')
+            if (img.exists)
+                cat('<h4>Last generated image:</h4><img style="display: block; margin-left: auto; margin-right: auto;" src="cache/', basename(img), '">', sep ='')
+            cat('\t -', '\n', file = '/var/log/sandboxR.log', append = TRUE)
+        }
+        
+        ## clear up envir
+        rm(list = ls(all.names = TRUE))
+
+}
