@@ -28,7 +28,7 @@ if (exists('src')) {
         src <- strsplit(src, '\n')[[1]]
         
         ## look for plots
-        img <- tempfile(tmpdir = '/var/www/cache')
+        img <- tempfile(tmpdir = '/var/www/webapp/cache')
         png(img)
         
         ## eval!
@@ -40,11 +40,11 @@ if (exists('src')) {
         
         ## return
         if (any(class(res) == 'error')) {
-            cat('ERROR', log, file = '/var/log/sandboxR.log', append = TRUE)
+            cat('FAIL', log, file = '/var/log/sandboxR.log', append = TRUE)
             cat('<pre><span style="color: red; font-weight: bold;">', res[[1]] ,'</span></pre>')
             cat('\t', res[[1]], '\n', file = '/var/log/sandboxR.log', append = TRUE)
         } else {
-            cat('OK', log, file = '/var/log/sandboxR.log', append = TRUE)
+            cat('OKAY', log, file = '/var/log/sandboxR.log', append = TRUE)
             res <- paste(capture.output(res), collapse = '\n')
             cat('<h4>Last returned value:</h4><pre>', res, '</pre>', sep ='')
             if (img.exists)
