@@ -29,17 +29,26 @@ $(document).ready(function(){
         mode: 'r',
         lineNumbers: true
     });
+    
+    var $flash = $('#form_flash');
 
     $('#send_r').click(function(){
+        if (terminal.getValue() == ''){
+            $flash.text('Please enter a command that I can run!').show();
+        } else {
+            $flash.hide();
+        }
         send2R();
     });
 
     $('#reset_r').click(function(){
         terminal.setValue('');
+        $flash.hide();
     });
 
     $('#examples_r').click(function(){
         terminal.setValue(examples[Math.floor(Math.random() * examples.length)]);
+        $flash.hide();
     });
 
     $("#wth_btn").click(function(){
