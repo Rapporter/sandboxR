@@ -40,7 +40,7 @@ sandbox <- function(src) {
     ## check for quoted forbidden functions: e.g. "get"()
     calls.forbidden <- gsub('"|`|\'', '', strings)  %in% blacklist
     if (any(calls.forbidden))
-        stop(sprintf('Forbidden function%s quoted: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(calls[which(calls.forbidden)], collapse = ', ')))
+        stop(sprintf('Forbidden function%s quoted: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(strings[which(calls.forbidden)], collapse = ', ')))
     
     ## check for forks of forbidden functions: e.g. x <- get
     blacklist.found <- sapply(sprintf('(<-|=)[ \t`]*%s[ \t`;)]*$', blacklist), function(x) any(grepl(x, src)))
