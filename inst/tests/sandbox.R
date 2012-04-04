@@ -22,6 +22,13 @@ test_that('lm', {
 
 test_that('forked functions', {
             expect_error(sandbox(c('x <- `eval`', 'x(runif(10))')))
+            expect_error(sandbox("x <- (get)"))
+        })
+
+test_that('forked functions', {
+            expect_error(sandbox("(get)('mtcars')"))
+            expect_error(sandbox("(`get`)('mtcars')"))
+            expect_error(sandbox("x <- (get)"))
         })
 
 test_that('quoted functions', {
