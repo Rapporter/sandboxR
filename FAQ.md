@@ -24,4 +24,5 @@ forkbomb <- function(){
 forkbomb();
 ```
 
-These problems would not ever be addressed by *sandboxR* as e.g. Apparmor can do a handy job here with ease.
+~~These problems would not ever be addressed by *sandboxR* as e.g. Apparmor can do a handy job here with ease.~~ Besides the fact that Apparmor/SELinux etc. can address this problem easily, `sandbox` has a timeout option and would stop executing user defined R calls after given period of time (default set to 10 seconds).
+
