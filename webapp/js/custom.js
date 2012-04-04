@@ -38,6 +38,7 @@ $(document).ready(function(){
             $flash.text('Please enter a command that I can run!').show();
         } else {
             $flash.hide();
+            $('#res').html('<img src="img/loading.gif">');
             $.post('R.Rhtml', { src: encodeURI(terminal.getValue()) }, function(data) {
                 $('#res').html(data);
             } );
