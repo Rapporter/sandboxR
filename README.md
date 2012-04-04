@@ -4,7 +4,7 @@
 
 This **POC** [R](http://www.r-project.org/) package tries to filter "malicious" calls in R expressions based on a blacklist to let shared R instances **be safe from file and system calls**.
 
-*If you are not the kind of person who likes to read much in the morning about a $n+1^{th}$ R package's theory and background, then please strike out for [testdriving the package in a browser](http://ec2-50-19-185-157.compute-1.amazonaws.com/) and **try to hack my system** with some guidance (see below)!*
+*If you are not the kind of person who likes to read much in the morning about a $n+1^{th}$ R package's theory and background, then please strike out for [testdriving the package in a browser](http://sandboxr.no-ip.org/) and **try to hack my system** with some guidance (see below)!*
 
 Please note that I am aware of [Apparmor](http://wiki.apparmor.net/index.php/Main_Page), [SELinux](http://selinuxproject.org/page/Main_Page), [Tomoyo Linux](http://tomoyo.sourceforge.jp/index.html.en) and other Mandatory Access Control based filters **and** this package does not intend to be used instead of those implementations!
 
@@ -62,7 +62,7 @@ Also as I am not sure in this package's success, only base packages (`base`, `ut
 
 ## Testdrive!
 
-Anyway, please feel free to **try** *and* **test** a [live (simple) web application which was build to test *sandboxR*](http://ec2-50-19-185-157.compute-1.amazonaws.com/)!
+Anyway, please feel free to **try** *and* **test** a [live (simple) web application which was build to test *sandboxR*](http://sandboxr.no-ip.org/)!
 
 There I would **ask you to your best at trying to hack the server**, like:
 
