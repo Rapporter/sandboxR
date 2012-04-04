@@ -3,6 +3,7 @@ context('filtering blacklisted functions')
 test_that('called functions', {
             expect_error(sandbox('system("cat /etc/passwd")'))
             expect_error(sandbox('get(paste("","y", "tem", sep="s"))("whoami")'))
+            expect_error(sandbox(c('f<-function(x) sin(x)', 'f(10)', 'body(f)[[1]] <- quote(readLines)', 'print(f("/sandbox/hello"))')))
         })
 
 test_that('paste/sprintf created functions', {
@@ -16,4 +17,12 @@ test_that('paste/sprintf created functions', {
 
 test_that('lm', {
             expect_error(sandbox('lm("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")'))
+        })
+
+test_that('forked functions', {
+            expect_error(sandbox(c('x <- `eval`', 'x(runif(10))')))
+        })
+
+test_that('quoted functions', {
+            expect_error(sandbox(c('x <- "get"("eval")', 'y <- "get"("parse")', 'x(y(text = \'mean(1:10)\'))')))
         })
