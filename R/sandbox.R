@@ -39,23 +39,17 @@ sandbox <- function(src) {
     blacklist.found <- which(blacklist.found == TRUE)
     if (length(blacklist.found) > 0)
         stop(sprintf('Forbidden function%s attempted to fork: %s.', ifelse(length(blacklist.found) == 1, ' was', 's were'), paste0(blacklist[blacklist.found], collapse = ', ')))
-
-    
-    
-    ## TODO: strplist
-    
-    
-    
+   
     ## check for forbidden function calls in static strings
-    blacklist.found <- sapply(sprintf('[ \t;,\\(]*%s[ \t]*\\(', blacklist), function(x) any(grepl(x, strings)))
+    blacklist.found <- sapply(sprintf('%s[ \t]*\\(', blacklist), function(x) any(grepl(x, strings)))
     blacklist.found <- which(blacklist.found == TRUE)
     if (length(blacklist.found) > 0)
         stop(sprintf('Forbidden function%s attempted to build: %s.', ifelse(length(blacklist.found) == 1, '\'s name was', 's\' names were'), paste0(blacklist[blacklist.found], collapse = ', ')))
     
     ## check for forbidden function calls in dynamic strings
-    src <- gsub('[ \t;,]*paste[ \t]*\\(', 'sandboxR::paste.masked\\(', src)
-    src <- gsub('[ \t;,]*paste0[ \t]*\\(', 'sandboxR::paste0.masked\\(', src)
-    src <- gsub('[ \t;,]*sprintf[ \t]*\\(', 'sandboxR::sprintf.masked\\(', src)
+    src <- gsub('paste[ \t]*\\(', 'sandboxR::paste.masked\\(', src)
+    src <- gsub('paste0[ \t]*\\(', 'sandboxR::paste0.masked\\(', src)
+    src <- gsub('sprintf[ \t]*\\(', 'sandboxR::sprintf.masked\\(', src)
     
     res <- tryCatch(eval(parse(text = src)), error = function(e) e)
     if (any(class(res) == 'error'))
