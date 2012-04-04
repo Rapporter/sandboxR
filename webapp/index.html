@@ -2,107 +2,95 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>R sandbox demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="R sandbox demo">
-    <meta name="author" content="Gergely Daróczi (daroczig)">
+      <title>R sandbox demo</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="description" content="R sandbox demo" />
+      <meta name="author" content="Gergely Daróczi (daroczig)" />
 
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-    <!--[if lt IE 7]><link rel="stylesheet" href="css/bootstrap-ie6.min.css"><![endif]-->
-    <!--[if lt IE 9]>
-      <script src="js/html5.js"></script>
-    <![endif]-->
+      <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
+      <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+      <link href="css/bootstrap.min.css" rel="stylesheet" />
+      <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css" type="text/css" />
+      <link href="css/custom.css" rel="stylesheet" />
+      <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+      <!--[if lt IE 7]><link rel="stylesheet" href="css/bootstrap-ie6.min.css"><![endif]-->
+      <!--[if lt IE 9]>
+          <script src="js/html5.js"></script>
+          <![endif]-->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css" type="text/css" />
-    <script src="http://codemirror.net/lib/codemirror.js" type="text/javascript"></script>
-    <script src="http://codemirror.net/lib/util/runmode.js" type="text/javascript"></script>
-    <script src="http://codemirror.net/mode/javascript/javascript.js" type="text/javascript"></script>
-    <script src="js/jquery.codemirror.js" type="text/javascript"></script>
-    <script src="js/r.js" type="text/javascript"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/custom.js"></script>
-    <link href="css/custom.css" rel="stylesheet">
-    
-  </head>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+      <script src="http://codemirror.net/lib/codemirror.js" type="text/javascript"></script>
+      <script src="http://codemirror.net/lib/util/runmode.js" type="text/javascript"></script>
+      <script src="http://codemirror.net/mode/javascript/javascript.js" type="text/javascript"></script>
+      <script src="js/jquery.codemirror.js" type="text/javascript"></script>
+      <script src="js/r.js" type="text/javascript"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script src="js/bootstrap-modal.js"></script>
+      <script src="js/custom.js"></script>
+    </head>
+    <body>
 
-  <body>
+      <!-- modal window -->
+      <div class="modal hide" id="modal_window">
 
-    <div class="container">
+        <div class="modal-header">
+          <a class="close" data-dismiss="modal">×</a>
+          <h3>What is this "sandbox" for?</h3>
+        </div><!-- .modal-header -->
 
-        <div class="modal hide" id="modal-window">
-          <div class="modal-header">
-            <a onclick="$('#modal-window').modal('toggle');" class="close">×</a>
-            <h3>What is this "sandbox" for?</h3>
-          </div>
-          <div class="modal-body center">
-            <p>This homepage is a demonstration of a <em>POC</em> R package which tries to filter "malicious" calls in R expressions based on a blacklist. This means if you know nothing of <a href="http://www.r-project.org/" target="_new">R</a> and/or not interested in using R in a shared environment or in a web application, you might have better stuffs to do instead of lruking here :)</p> 
-            <p>For more details please check out my <a href="https://github.com/daroczig/sandboxR" target="_new">Github repository</a>!</p>
-            <p><b>The goal of this little environment is to let you test your <em>R</em> and <em>other</em> skills:</b></p>
-            <ul>
-                <li>try to read the system-wide readable <code>/sandbox/secret</code> file,</li>
-                <li>try to write something in the system-wide writable <code>/sandbox/hello</code> file,</li>
-                <li>or simply try to figure out the root password on the machine :)</li>
-            </ul>
-            <p><em>Some help</em>: you may find some server-specific information on <a href="/Risneat" target="_new">RApache info page</a>.</p>
-            <p>If you would succeed in any above tasks, please give me some feedback in <a href="http://snowl.net">mail</a> or on <a href="https://github.com/daroczig/sandboxR/issues" target="_new">GitHub</a>!</p>
-            <hr>
-            <em style="text-align: center; display: block;">For monitoring purposes your R commands and your IP address besides a timestamp is logged.</em>
-          </div>
-          <div class="modal-footer">
-            <a onclick="$('#modal-window').modal('toggle');" class="btn">Close</a>
-          </div>
-        </div>
+        <div class="modal-body center">
+          <p>This homepage is a demonstration of a <em>POC</em> R package which tries to filter "malicious" calls in R expressions based on a blacklist. This means if you know nothing of <a href="http://www.r-project.org/" target="_new">R</a> and/or not interested in using R in a shared environment or in a web application, you might have better stuffs to do instead of lruking here :)</p> 
+          <p>For more details please check out my <a href="https://github.com/daroczig/sandboxR" target="_new">Github repository</a>!</p>
+          <p><b>The goal of this little environment is to let you test your <em>R</em> and <em>other</em> skills:</b></p>
+          <ul>
+            <li>try to read the system-wide readable <code>/sandbox/secret</code> file,</li>
+            <li>try to write something in the system-wide writable <code>/sandbox/hello</code> file,</li>
+            <li>or simply try to figure out the root password on the machine :)</li>
+          </ul>
+          <p><em>Some help</em>: you may find some server-specific information on <a href="/Risneat" target="_new">RApache info page</a>.</p>
+          <p>If you would succeed in any above tasks, please give me some feedback in <a href="http://snowl.net">mail</a> or on <a href="https://github.com/daroczig/sandboxR/issues" target="_new">GitHub</a>!</p>
 
-        <div id="content">
+          <hr>
 
-            <div class="head">
-                <h1>R sandbox demo</h1>
+            <p id="modal_notice">For monitoring purposes your R commands and your IP address besides a timestamp is logged.<p>
+
+          </div><!-- end .modal-body -->
+
+        </div><!-- #modal_window -->
+
+        <header>
+          <h1>R sandbox demo</h1>
+        </header>
+
+        <div class="container" class="span12">
+
+          <div id="content" class="row-fluid">
+
+            <div class="form-actions">
+              <a class="btn btn-primary" id="send_r">Run R!</a>
+              <a class="btn" id="reset_r">Reset</a>
+              <a class="btn btn-danger" id="examples_r">Give me some nifty examples!</a>
+              <a class="btn btn-inverse pull-right" id="wth_btn">What the heck is this?</a>
             </div>
-            
+
             <form id="R">
-            
-                <textarea id="term"></textarea>
-                
-                <div class="form-actions">
-                    <a class="btn btn-primary" href="javascript:send2R()">Run R!</a>
-                    <a class="btn" href="javascript:terminal.setValue('');">Reset</a>
-                    <a class="btn btn-danger" href="javascript:terminal.setValue(examples[Math.floor(Math.random()*examples.length)]);">Give me some nifty examples!</a>
-                    <a class="btn btn-inverse" style="float: right;" href="javascript:$('#modal-window').modal('toggle');">What the heck is this?</a>
-                </div>
-                
+              
+              <textarea id="term"></textarea>
+              
             </form>
             
             <div id="res">
             </div>
             
-        </div>
+          </div><!-- #content -->
 
-      <hr>
+        </div> <!-- .container -->
 
-      <footer>
-        <p style="text-align:center;">(c) 2012 <a href="http://snowl.net" target="_new">daroczig</a> | Technologies used: <a href="http://www.r-project.org/" target="_new">R</a>, <a href="http://rapache.net/" target="_new">RApache</a>, <a href="http://codemirror.net/" target="_new">CodeMirror</a> and <a href="http://twitter.github.com/bootstrap/" target="_new">Bootstrap</a> | Hosted at <a href="http://aws.amazon.com/ec2/" target="_new">Amazon EC2</a></p>
-      </footer>
-
-    </div> <!-- /container -->
- 
-    <script type="text/javascript">
-          var terminal = CodeMirror.fromTextArea(document.getElementById("term"), {
-            mode: 'r',
-            lineNumbers: true
-          });
-    </script>
- 
-    <a href="https://github.com/daroczig/sandboxR" target="_new"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub"></a>
-    
-  </body>
-</html>
+        <footer>
+          <p>&copy; 2012 <a href="http://snowl.net" target="_new">daroczig</a> | Technologies used: <a href="http://www.r-project.org/" target="_new">R</a>, <a href="http://rapache.net/" target="_new">RApache</a>, <a href="http://codemirror.net/" target="_new">CodeMirror</a> and <a href="http://twitter.github.com/bootstrap/" target="_new">Bootstrap</a> | Hosted at <a href="http://aws.amazon.com/ec2/" target="_new">Amazon EC2</a></p>
+        </footer>
+        
+        <a href="https://github.com/daroczig/sandboxR" target="_new"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub"></a>
+        
+      </body>
+    </html>
