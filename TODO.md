@@ -4,4 +4,4 @@ Allow and create masked functions for the followings:
  * assign
  * attach, detach
 
-Check for `::` in calls not to allow running commands from unloaded packages.
+~~Check for `::` in calls not to allow running commands from unloaded packages.~~

@@ -22,11 +22,14 @@ sandbox <- function(src) {
         stop('Syntax error.')
     
     p       <- attr(src.r, 'data')
-    p.id    <- 
     calls   <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_FUNCTION_CALL')]))
     strings <- sort(unique(p$text[which(p$token.desc == 'STR_CONST')]))
     vars    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL')]))
+    pkgs    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_PACKAGE')]))
 
+    if (length(pkgs) > 0)
+        stop(sprintf('Tried to call at least one function outside of namespace from package%s: %s', ifelse(length(pkgs) == 0, '', 's'), paste0(pkgs, collapse = ', ')))
+    
     blacklist <- as.character(unlist(commands.blacklist()))
     
     ## check for forbidden function calls
