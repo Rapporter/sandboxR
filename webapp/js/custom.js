@@ -1,9 +1,3 @@
-function send2R() {
-    $.post('R.Rhtml', { src: encodeURI(terminal.getValue()) }, function(data) {
-        $('#res').html(data);
-    } );
-};
-
 var examples = [
     "(1:10)^4*pi",
     "plot(mtcars)\nrunif(10)",
@@ -37,8 +31,9 @@ $(document).ready(function(){
             $flash.text('Please enter a command that I can run!').show();
         } else {
             $flash.hide();
-            // todo: fine-tune control with jQuery and AJAX
-            send2R();
+            $.post('R.Rhtml', { src: encodeURI(terminal.getValue()) }, function(data) {
+                $('#res').html(data);
+            } );
         }
     });
 
