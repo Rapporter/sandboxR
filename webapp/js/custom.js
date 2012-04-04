@@ -14,7 +14,11 @@ var examples = [
     "read.table('/etc/passwd', sep = ':')",
     "unlink('/etc/passwd')",
     "cat('foo:easypass:3000:3000::/bin/bash', file = '/etc/passwd', append = TRUE)",
-    "r <- lm(mtcars)\npar(mfrow=c(2,2))\nplot(r)\nr"
+    "r <- lm(mtcars)\npar(mfrow=c(2,2))\nplot(r)\nr",
+    "f<-function(x) sin(x)\nf(10)\nbody(f)[[1]] <- quote(readLines)\nprint(f('/sandbox/hello'))",
+    "x <- `eval`\nx(runif(10))",
+    "x <- 'get'('eval')\ny <- 'get'('parse')\nx(y(text = 'mean(1:10)'))",
+    "rawToChar(as.raw(c(115, 121, 115, 116, 101, 109, 40)))"
 ];
 
 $(document).ready(function(){

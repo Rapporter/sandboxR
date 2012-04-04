@@ -4,6 +4,7 @@ test_that('called functions', {
             expect_error(sandbox('system("cat /etc/passwd")'))
             expect_error(sandbox('get(paste("","y", "tem", sep="s"))("whoami")'))
             expect_error(sandbox(c('f<-function(x) sin(x)', 'f(10)', 'body(f)[[1]] <- quote(readLines)', 'print(f("/sandbox/hello"))')))
+            expect_error(sandbox('rawToChar(as.raw(c(115, 121, 115, 116, 101, 109, 40)))'))
         })
 
 test_that('paste/sprintf created functions', {
