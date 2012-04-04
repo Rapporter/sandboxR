@@ -2,10 +2,13 @@
 \alias{sandbox}
 \title{Eval in sandbox}
 \usage{
-  sandbox(src)
+  sandbox(src, time.limit = 10)
 }
 \arguments{
   \item{src}{character vector of R commands}
+
+  \item{time.limit}{limit on the elapsed time while running
+  \code{src}}
 }
 \description{
   Eval in sandbox

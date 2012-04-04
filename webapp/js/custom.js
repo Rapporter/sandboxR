@@ -22,7 +22,9 @@ var examples = [
     "(get)('mtcars')",
     "(`get`)('mtcars')",
     "x <- (eval)",
-    "lapply('/etc/passwd', readLines)"
+    "lapply('/etc/passwd', readLines)",
+    "while(TRUE) mean(1:10)",
+    "library(multicore)\nforkbomb <- function(){\n  repeat{\n    parallel(forkbomb());\n  }\n}\nforkbomb();"
 ];
 
 $(document).ready(function(){

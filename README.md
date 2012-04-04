@@ -74,7 +74,7 @@ Please do send me feedback if you'd succeed or you are tired of the too sharp re
 
 ## Frequently asked questions
 
-Please see in dedicated file (FAQ.md).
+Please see in dedicated file ([FAQ.md](https://github.com/daroczig/sandboxR/blob/master/FAQ.md)).
 
 ## License
 

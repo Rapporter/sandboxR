@@ -38,3 +38,7 @@ test_that('quoted functions', {
 test_that('functions as symbols', {
             expect_error(sandbox('lapply("/etc/passwd", readLines)'))
         })
+
+test_that('check elapsed time', {
+            expect_error(sandbox("while(TRUE) mean(1:10)", 1))
+        })

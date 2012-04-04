@@ -1,5 +1,6 @@
 #' Eval in sandbox 
 #' @param src character vector of R commands
+#' @param time.limit limit on the elapsed time while running \code{src}
 #' @examples \dontrun{
 #' sandbox('paste(rev(c(")", "whatever", "(", "m", "e", "t", "s", "y", "s")), sep = "", collapse = "")')
 #' sandbox('get(paste("","y", "tem", sep="s"))("whoami")')
@@ -9,7 +10,7 @@
 #' sandbox('lm("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")')
 #' }
 #' @export
-sandbox <- function(src) {
+sandbox <- function(src, time.limit = 10) {
     
     if (missing(src))
         stop('Nothing provided to check.')
@@ -70,7 +71,13 @@ sandbox <- function(src) {
     src <- gsub('paste0[ \t`\'"]*\\(', 'sandboxR::paste0.masked\\(', src)
     src <- gsub('sprintf[ \t`\'"]*\\(', 'sandboxR::sprintf.masked\\(', src)
     
+    ## check elapsed time
+    setTimeLimit(elapsed = time.limit)
+    
+    ## evaluate
     res <- tryCatch(eval(parse(text = src)), error = function(e) e)
+
+    setTimeLimit(elapsed = Inf)
     if (any(class(res) == 'error'))
         stop(res[[1]])
     
