@@ -37,8 +37,8 @@ $(document).ready(function(){
             $flash.text('Please enter a command that I can run!').show();
         } else {
             $flash.hide();
+            send2R();
         }
-        send2R();
     });
 
     $('#reset_r').click(function(){
