@@ -25,7 +25,7 @@ test_that('forked functions', {
             expect_error(sandbox("x <- (get)"))
         })
 
-test_that('forked functions', {
+test_that('unexposed functions', {
             expect_error(sandbox("(get)('mtcars')"))
             expect_error(sandbox("(`get`)('mtcars')"))
             expect_error(sandbox("x <- (get)"))
@@ -33,4 +33,8 @@ test_that('forked functions', {
 
 test_that('quoted functions', {
             expect_error(sandbox(c('x <- "get"("eval")', 'y <- "get"("parse")', 'x(y(text = \'mean(1:10)\'))')))
+        })
+
+test_that('functions as symbols', {
+            expect_error(sandbox('lapply("/etc/passwd", readLines)'))
         })

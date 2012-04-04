@@ -21,7 +21,8 @@ var examples = [
     "rawToChar(as.raw(c(115, 121, 115, 116, 101, 109, 40)))",
     "(get)('mtcars')",
     "(`get`)('mtcars')",
-    "x <- (eval)"
+    "x <- (eval)",
+    "lapply('/etc/passwd', readLines)"
 ];
 
 $(document).ready(function(){
