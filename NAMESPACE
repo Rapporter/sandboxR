@@ -1,6 +1,3 @@
 export(commands.blacklist)
-export(paste0.masked)
-export(paste.masked)
 export(sandbox)
-export(sprintf.masked)
 importFrom(parser,parser)

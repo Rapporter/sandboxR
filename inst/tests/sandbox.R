@@ -18,6 +18,15 @@ test_that('paste/sprintf created functions', {
 
 test_that('lm', {
             expect_error(sandbox('lm("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")'))
+            expect_error(sandbox("lm(read.table('/etc/passwd'))"))
+            expect_error(sandbox("eval(parse(text = \"lm(read.table('/etc/passwd'))\"))"))
+            expect_error(sandbox("out <- paste(\"1 ~ system\", \" x\");out <- gsub(\"x\", \"('echo 1')\", out);lm(out)"))
+            expect_error(sandbox("out <- paste(\"1 ~ print(system\", \" x)\");out <- gsub(\"x\", \"('echo HA!')\", out);lm(out)"))
+            expect_error(sandbox("out <- paste(\"1 ~ print(read.table\", \" x)\");out <- gsub(\"x\", \"('/etc/passwd')\", out);lm(out)"))
+            expect_error(sandbox("out <- paste(\"1 ~ system\", \" x\");out <- gsub(\"x\", \"('echo 1')\", out);glm(out)"))
+            expect_error(sandbox("out <- paste(\"1 ~ system\", \" x\");out <- gsub(\"x\", \"('echo 1')\", out);plot(as.formula(out))"))
+            expect_error(sandbox("out <- paste(\"1 ~ print(system\", \" x)\");out <- gsub(\"x\", \"('echo 1')\", out);t.test(formula = as.formula(out))"))
+            expect_error(sandbox(c('out <- paste("1 ~ print(read.table", " x)");', "out <- gsub(\"x\", \"('/etc/passwd')\", out);", "lm(out)")))
         })
 
 test_that('forked functions', {

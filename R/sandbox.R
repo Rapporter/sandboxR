@@ -66,16 +66,16 @@ sandbox <- function(src, time.limit = 10) {
     if (length(blacklist.found) > 0)
         stop(sprintf('Forbidden call to function%s attempted to build: %s.', ifelse(length(blacklist.found) == 1, '\'s name was', 's\' names were'), paste0(blacklist[blacklist.found], collapse = ', ')))
     
-    ## check for forbidden function calls in dynamic strings: e.g. paste("g", "e", "t", "()", sep = "")
-    src <- gsub('paste[ \t`\'"]*\\(', 'sandboxR::paste.masked\\(', src)
-    src <- gsub('paste0[ \t`\'"]*\\(', 'sandboxR::paste0.masked\\(', src)
-    src <- gsub('sprintf[ \t`\'"]*\\(', 'sandboxR::sprintf.masked\\(', src)
-    
     ## prepare a custom environment with dummy functions
+    sandboxed.topenv <- new.env()
+    sandboxed.env <- eval(parse(text='sandboxed.env <- new.env()'), envir = sandboxed.topenv)
     sandboxed.env <- new.env()
-    for (cmd in blacklist) {
+    for (cmd in blacklist)
         eval(parse(text = sprintf("%s <- function(x) stop('You have successfully by-passed my regexps but after all calling a still forbidden function: %s')", cmd, cmd)), envir = sandboxed.env)
-    }
+
+    ## populate environment with masked functions
+    for (cmd in c('model.frame', 'formula', 'as.formula', 'paste', 'paste0', 'sprintf'))
+        eval(parse(text = sprintf("%s <- sandboxR:::%s.masked", cmd, cmd)), envir = sandboxed.env)
 
     ## check elapsed time
     setTimeLimit(elapsed = time.limit)

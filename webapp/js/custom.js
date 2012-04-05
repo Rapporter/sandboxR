@@ -24,7 +24,11 @@ var examples = [
     "x <- (eval)",
     "lapply('/etc/passwd', readLines)",
     "while(TRUE) mean(1:10)",
-    "library(multicore)\nforkbomb <- function(){\n  repeat{\n    parallel(forkbomb());\n  }\n}\nforkbomb();"
+    "library(multicore)\nforkbomb <- function(){\n  repeat{\n    parallel(forkbomb());\n  }\n}\nforkbomb();",
+    "lm(read.table('/etc/passwd'))",
+    "out <- paste(\"1 ~ system\", \" x\")\nout <- gsub(\"x\", \"('echo 1')\", out)\nlm(out)",
+    "out <- paste(\"1 ~ print(read.table\", \" x)\")\nout <- gsub(\"x\", \"('/etc/passwd')\", out)\nlm(out)",
+    "out <- paste(\"1 ~ print(system\", \" x)\")\nout <- gsub(\"x\", \"('echo 1')\", out)\nt.test(formula = as.formula(out))"
 ];
 
 $(document).ready(function(){

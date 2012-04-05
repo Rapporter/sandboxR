@@ -10,7 +10,6 @@
 #' paste.masked('xsx sax s system( dasf asf as url(')
 #' paste.masked(c(letters[c(19, 25, 19, 20, 5, 13)], '('), collapse = "")
 #' }
-#' @export
 paste.masked  <- function(..., sep = '', collapse = NULL) {
     
     res <- base::paste(..., sep = sep, collapse = collapse)
@@ -33,7 +32,6 @@ paste.masked  <- function(..., sep = '', collapse = NULL) {
 #' @examples \dontrun{
 #' paste0.masked('sys', 'tem', '(')
 #' }
-#' @export
 paste0.masked  <- function(..., collapse = NULL) {
     
     sandboxR::paste.masked(..., sep = '', collapse = collapse)
@@ -44,7 +42,6 @@ paste0.masked  <- function(..., collapse = NULL) {
 #' Masked sprintf
 #' @param fmt see \code{sprintf}
 #' @param ... see \code{sprintf}
-#' @export
 sprintf.masked  <- function(fmt, ...) {
     
     res <- base::sprintf(fmt, ...)
@@ -57,5 +54,38 @@ sprintf.masked  <- function(fmt, ...) {
         stop(sprintf('Forbidden function%s name build: %s.', ifelse(length(blacklist.found) == 1, '\'s', 's\''), paste0(blacklist[blacklist.found], collapse = ', ')))
     
     return(res)
+    
+}
+
+
+#' Masked model.frame
+#' @param formula see \code{model.frame}
+#' @param ... see \code{model.frame}
+model.frame.masked <- function(formula, ...) {
+    
+    sandbox(formula)
+    stats::model.frame(formula, ...)
+    
+}
+
+
+#' Masked formula
+#' @param x see \code{formula}
+#' @param ... see \code{formula}
+formula.masked <- function(x, ...) {
+    
+    sandbox(x)
+    stats::formula(formula, ...)
+
+}
+
+
+#' Masked as.formula
+#' @param object see \code{as.formula}
+#' @param env see \code{as.formula}
+as.formula.masked <- function(object, env = parent.frame()) {
+    
+    sandbox(object)
+    stats::as.formula(object, env)
     
 }
