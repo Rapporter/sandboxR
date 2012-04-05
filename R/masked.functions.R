@@ -63,7 +63,8 @@ sprintf.masked  <- function(fmt, ...) {
 #' @param ... see \code{model.frame}
 model.frame.masked <- function(formula, ...) {
     
-    sandbox(formula)
+    if (is.character(formula))
+        sandbox(formula)
     stats::model.frame(formula, ...)
     
 }
