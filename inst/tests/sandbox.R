@@ -31,13 +31,12 @@ test_that('lm', {
 
 test_that('forked functions', {
             expect_error(sandbox(c('x <- `eval`', 'x(runif(10))')))
-            expect_error(sandbox("x <- (get)"))
+            expect_error(sandbox("x <- (system)"))
         })
 
 test_that('unexposed functions', {
-            expect_error(sandbox("(get)('mtcars')"))
-            expect_error(sandbox("(`get`)('mtcars')"))
-            expect_error(sandbox("x <- (get)"))
+            expect_error(sandbox("`system`('cat /etc/passwd')"))
+            expect_error(sandbox("x <- (system)"))
         })
 
 test_that('quoted functions', {
@@ -63,4 +62,7 @@ test_that('called functions', {
             expect_output(sandboxR:::formula.masked('1~1'), '.*')
             expect_output(sandboxR:::formula.masked(1~1), '.*')
             expect_output(sandboxR:::paste.masked(letters), '.*')
+            expect_output(sandbox("(get)('mtcars')"), '.*')
+            expect_output(sandbox("(`get`)('mtcars')"), '.*')
+            expect_output(sandbox("x <- (get)"), '.*')
         })

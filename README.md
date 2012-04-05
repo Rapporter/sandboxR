@@ -54,7 +54,7 @@ The blacklisted functions are checked in the passed R sources:
 
 As being a *pre-alpha* release you would find too much restrictions in this approach ATM, as for example the following functions are also blacklisted (for simplicity - **later will be enabled** for sure):
 
- * get, mget
+ * ~~get~~, mget
  * assign
  * attach, detach
 

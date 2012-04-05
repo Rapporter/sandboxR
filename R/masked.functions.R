@@ -92,3 +92,27 @@ as.formula.masked <- function(object, env = parent.frame()) {
     stats::as.formula(object, env)
     
 }
+
+
+#' Masked eval
+#' @param expr see \code{eval}
+#' @param ... see \code{eval}
+eval.masked <- evalq.masked <- local.masked <- function(expr, envir, enclos) {
+    if (!missing(envir) | !missing(enclose))
+        stop('Tried to leave sandboxed environment.')
+    mc <- match.call()
+    sandbox(deparse(substitute(expr)))
+    eval(mc)
+}
+
+
+#' Masked get
+#' @param x see \code{get}
+#' @param envir see \code{get}
+#' @param ... see \code{get}
+get.masked <- function(x, envir, ...) {
+    if (!missing(envir))
+        stop('Tried to leave sandboxed environment.')
+    if (x %in% as.character(unlist(commands.blacklist())))
+        stop(sprintf('Tried to get a forbidden function: %s.', x))
+}
