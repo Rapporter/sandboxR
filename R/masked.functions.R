@@ -75,8 +75,9 @@ model.frame.masked <- function(formula, ...) {
 #' @param ... see \code{formula}
 formula.masked <- function(x, ...) {
     
-    sandbox(x)
-    stats::formula(formula, ...)
+    if (is.character(x))
+        sandbox(x)
+    stats::formula(x, ...)
 
 }
 
@@ -86,7 +87,8 @@ formula.masked <- function(x, ...) {
 #' @param env see \code{as.formula}
 as.formula.masked <- function(object, env = parent.frame()) {
     
-    sandbox(object)
+    if (is.character(object))
+        sandbox(object)
     stats::as.formula(object, env)
     
 }

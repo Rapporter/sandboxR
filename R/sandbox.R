@@ -74,6 +74,7 @@ sandbox <- function(src, time.limit = 10) {
         eval(parse(text = sprintf("%s <- function(x) stop('You have successfully by-passed my regexps but after all calling a still forbidden function: %s')", cmd, cmd)), envir = sandboxed.env)
 
     ## populate environment with masked functions
+    #for (cmd in c('model.frame', 'formula', 'as.formula', 'paste', 'paste0', 'sprintf'))
     for (cmd in c('model.frame', 'formula', 'as.formula', 'paste', 'paste0', 'sprintf'))
         eval(parse(text = sprintf("%s <- sandboxR:::%s.masked", cmd, cmd)), envir = sandboxed.env)
 

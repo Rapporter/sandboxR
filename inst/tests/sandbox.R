@@ -51,3 +51,16 @@ test_that('functions as symbols', {
 test_that('check elapsed time', {
             expect_error(sandbox("while(TRUE) mean(1:10)", 1))
         })
+
+context('checking normal behaviour')
+
+test_that('called functions', {
+            expect_output(sandbox("plot(formula=as.formula('1~1'))"), '.*')
+            expect_output(sandbox("lm(mtcars)"), '.*')
+            expect_output(sandboxR:::model.frame.masked(mtcars), '.*')
+            expect_output(sandboxR:::as.formula.masked('1~1'), '.*')
+            expect_output(sandboxR:::as.formula.masked(1~1), '.*')
+            expect_output(sandboxR:::formula.masked('1~1'), '.*')
+            expect_output(sandboxR:::formula.masked(1~1), '.*')
+            expect_output(sandboxR:::paste.masked(letters), '.*')
+        })
