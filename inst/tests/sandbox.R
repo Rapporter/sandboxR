@@ -55,10 +55,14 @@ test_that('eval checks', {
             expect_error(sandbox("eval(mtcars, envir = .GlobalEnv)"))
         })
 
-context('checking normal behaviour')
+test_that('eval checks', {
+            expect_error(sandbox("assign('a', system)"))
+        })
+
+context('checking normal behavior')
 
 test_that('called functions', {
-            expect_output(sandbox("plot(formula=as.formula('1~1'))"), '.*')
+            expect_output(sandbox("as.formula('1~1')"), '.*')
             expect_output(sandbox("lm(mtcars)"), '.*')
             expect_output(sandboxR:::model.frame.masked(mtcars), '.*')
             expect_output(sandboxR:::as.formula.masked('1~1'), '.*')
@@ -70,4 +74,6 @@ test_that('called functions', {
             expect_output(sandbox("(`get`)('mtcars')"), '.*')
             expect_output(sandbox("x <- (get)"), '.*')
             expect_output(sandbox("eval(mtcars)"), '.*')
+            expect_output(sandbox("assign('a', get); a"), '.*')
+            expect_output(sandbox("a <- 2; a"), '2')
         })

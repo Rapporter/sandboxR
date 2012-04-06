@@ -98,12 +98,15 @@ as.formula.masked <- function(object, env = parent.frame()) {
 #' @param expr see \code{eval}
 #' @param ... see \code{eval}
 eval.masked <- evalq.masked <- local.masked <- function(expr, envir, enclos) {
+    
     if (!missing(envir) | !missing(enclos))
         stop('Tried to leave sandboxed environment.')
+    
     mc <- match.call()
     sandbox(deparse(substitute(expr)))
     mc[[1]] <- as.name(sub('\\.masked$', '', mc[[1]]))
     eval(mc)
+    
 }
 
 
@@ -112,11 +115,38 @@ eval.masked <- evalq.masked <- local.masked <- function(expr, envir, enclos) {
 #' @param envir see \code{get}
 #' @param ... see \code{get}
 get.masked <- function(x, pos, envir, ...) {
+    
     if (!missing(envir)| !missing(pos))
         stop('Tried to leave sandboxed environment.')
+    
     if (x %in% as.character(unlist(commands.blacklist())))
         stop(sprintf('Tried to get a forbidden function: %s.', x))
+    
     mc <- match.call()
     mc[[1]] <- quote(get)
+    mc$pos <- parent.frame()
     eval(mc)
+    
+}
+
+
+#' Masked assign
+#' @param x see \code{assign}
+#' @param envir see \code{assign}
+#' @param ... see \code{assign}
+assign.masked <- function(x, value, ...) {
+    
+    mc <- match.call()
+    
+    if (!is.null(mc$envir) | !is.null(mc$pos))
+        stop('Tried to leave sandboxed environment.')
+    
+    if (deparse(substitute(value)) %in% as.character(unlist(commands.blacklist())))
+        stop(sprintf('Tried to fork a forbidden function: %s.', deparse(substitute(value))))
+    
+    mc[[1]] <- quote(assign)
+    mc$pos <- parent.frame()
+    eval(mc)
+    return(mc)
+    
 }
