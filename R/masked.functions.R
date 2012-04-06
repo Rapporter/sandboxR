@@ -119,8 +119,7 @@ get.masked <- function(x, pos, envir, ...) {
     if (!missing(envir)| !missing(pos))
         stop('Tried to leave sandboxed environment.')
     
-    if (x %in% as.character(unlist(commands.blacklist())))
-        stop(sprintf('Tried to get a forbidden function: %s.', x))
+    sandbox(x)
     
     mc <- match.call()
     mc[[1]] <- quote(get)
@@ -141,8 +140,7 @@ assign.masked <- function(x, value, ...) {
     if (!is.null(mc$envir) | !is.null(mc$pos))
         stop('Tried to leave sandboxed environment.')
     
-    if (deparse(substitute(value)) %in% as.character(unlist(commands.blacklist())))
-        stop(sprintf('Tried to fork a forbidden function: %s.', deparse(substitute(value))))
+    sandbox(deparse(substitute(value)))
     
     mc[[1]] <- quote(assign)
     mc$pos <- parent.frame()

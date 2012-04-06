@@ -55,9 +55,16 @@ test_that('eval checks', {
             expect_error(sandbox("eval(mtcars, envir = .GlobalEnv)"))
         })
 
-test_that('eval checks', {
+test_that('assign checks', {
             expect_error(sandbox("assign('a', system)"))
+            expect_error(sandbox("assign('a', base::system)"))
         })
+
+test_that('get checks', {
+            expect_error(sandbox("get('system')"))
+            expect_error(sandbox("get('base::system')"))
+        })
+
 
 context('checking normal behavior')
 
