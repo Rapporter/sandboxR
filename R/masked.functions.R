@@ -111,8 +111,8 @@ eval.masked <- evalq.masked <- local.masked <- function(expr, envir, enclos) {
 #' @param x see \code{get}
 #' @param envir see \code{get}
 #' @param ... see \code{get}
-get.masked <- function(x, envir, ...) {
-    if (!missing(envir))
+get.masked <- function(x, pos, envir, ...) {
+    if (!missing(envir)| !missing(pos))
         stop('Tried to leave sandboxed environment.')
     if (x %in% as.character(unlist(commands.blacklist())))
         stop(sprintf('Tried to get a forbidden function: %s.', x))
