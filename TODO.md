@@ -7,6 +7,7 @@
 
  * ~~get~~, mget
  * ~~assign~~
+ * ~~ls~~
  * attach, detach
 
 I never planned, but _eval_, _evalq_ and _local_ are also enabled now.

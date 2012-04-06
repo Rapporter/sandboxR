@@ -12,11 +12,7 @@ test_that('paste/sprintf created functions', {
             expect_error(sandbox('paste("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")'))
         })
 
-test_that('forked functions', {
-            expect_error(sandbox(c("x <- system", "x('ls')")))
-        })
-
-test_that('lm', {
+test_that('lm hacks', {
             expect_error(sandbox('lm("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")'))
             expect_error(sandbox("lm(read.table('/etc/passwd'))"))
             expect_error(sandbox("eval(parse(text = \"lm(read.table('/etc/passwd'))\"))"))
@@ -32,6 +28,7 @@ test_that('lm', {
 test_that('forked functions', {
             expect_error(sandbox(c('x <- `eval.parent`', 'x(runif(10))')))
             expect_error(sandbox("x <- (system)"))
+            expect_error(sandbox(c("x <- system", "x('ls -la')")))
         })
 
 test_that('unexposed functions', {
@@ -48,24 +45,35 @@ test_that('functions as symbols', {
             expect_error(sandbox('lapply("whoami", system, intern = TRUE)'))
         })
 
+context('checking forkbomb')
+
 test_that('check elapsed time', {
             expect_error(sandbox("while(TRUE) mean(1:10)", 1))
         })
 
-test_that('eval checks', {
+context('masked functions')
+
+test_that('eval', {
             expect_error(sandbox("eval(mtcars, envir = .GlobalEnv)"))
+            expect_output(sandbox("eval(mtcars)"), '.*')
         })
 
-test_that('assign checks', {
+test_that('assign', {
             expect_error(sandbox("assign('a', system)"))
             expect_error(sandbox("assign('a', base::system)"))
+            expect_output(sandbox("assign('a', get); a"), '.*')
         })
 
-test_that('get checks', {
+test_that('get', {
             expect_error(sandbox("get('system')"))
             expect_error(sandbox("get('base::system')"))
         })
 
+test_that('ls', {
+            expect_output(sandbox('ls()'), '.*')
+            expect_output(sandbox('x<-1;ls()'), '.*')
+            expect_output(sandbox('x<-runif;y<-1:20;ls()'), '.*')
+        })
 
 context('checking normal behavior')
 
@@ -81,7 +89,7 @@ test_that('called functions', {
             expect_output(sandbox("(get)('mtcars')"), '.*')
             expect_output(sandbox("(`get`)('mtcars')"), '.*')
             expect_output(sandbox("x <- (get)"), '.*')
-            expect_output(sandbox("eval(mtcars)"), '.*')
-            expect_output(sandbox("assign('a', get); a"), '.*')
             expect_output(sandbox("a <- 2; a"), '2')
+            expect_output(sandbox(c('x <- eval', 'x(runif(10))')), '.*')
+            expect_output(sandbox(c('x <- runif', 'x(10)')), '.*')
         })

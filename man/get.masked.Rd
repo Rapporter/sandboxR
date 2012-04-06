@@ -7,6 +7,8 @@
 \arguments{
   \item{x}{see \code{get}}
 
+  \item{pos}{see \code{get}}
+
   \item{envir}{see \code{get}}
 
   \item{...}{see \code{get}}

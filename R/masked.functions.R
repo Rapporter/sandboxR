@@ -111,6 +111,7 @@ eval.masked <- function(expr, envir, enclos) {
 
 #' Masked get
 #' @param x see \code{get}
+#' @param pos see \code{get}
 #' @param envir see \code{get}
 #' @param ... see \code{get}
 get.masked <- function(x, pos, envir, ...) {
@@ -130,7 +131,7 @@ get.masked <- function(x, pos, envir, ...) {
 
 #' Masked assign
 #' @param x see \code{assign}
-#' @param envir see \code{assign}
+#' @param value see \code{assign}
 #' @param ... see \code{assign}
 assign.masked <- function(x, value, ...) {
     
@@ -144,6 +145,24 @@ assign.masked <- function(x, value, ...) {
     mc[[1]] <- quote(assign)
     mc$pos <- parent.frame()
     eval(mc)
-    return(mc)
     
+}
+
+
+#' Masked ls
+#' @param ... see \code{ls}
+#' @aliases ls.masked
+objects.masked <- ls.masked <- function(...) {
+    
+    mc <- match.call()
+    
+    if (!is.null(mc$envir) | !is.null(mc$pos) | !is.null(mc$name))
+        stop('Tried to leave sandboxed environment.')
+    
+    mc[[1]] <- quote(ls)
+    mc$pos <- parent.frame()
+    res <- eval(mc)
+    
+    setdiff(res, c(as.character(unlist(commands.blacklist())), sub('\\.masked$', '', ls(pattern = ".*\\.masked", envir = getNamespace("sandboxR")))))
+
 }

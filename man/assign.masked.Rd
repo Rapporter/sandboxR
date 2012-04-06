@@ -7,7 +7,7 @@
 \arguments{
   \item{x}{see \code{assign}}
 
-  \item{envir}{see \code{assign}}
+  \item{value}{see \code{assign}}
 
   \item{...}{see \code{assign}}
 }
