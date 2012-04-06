@@ -39,15 +39,15 @@ sandbox <- function(src, time.limit = 10) {
         stop(sprintf('Forbidden function%s called: %s.', ifelse(sum(calls.forbidden) == 1, '', 's'), paste0(calls[which(calls.forbidden)], collapse = ', ')))
 
     ## check for unexposed forbidden function calls: e.g. (get)()
-    #blacklist.found <- sapply(sprintf('\\(`?%s`?\\)', blacklist), function(x) any(grepl(x, src)))
-    #blacklist.found <- which(blacklist.found == TRUE)
-    #if (length(blacklist.found) > 0)
-    #    stop(sprintf('Forbidden function%s called: %s.', ifelse(length(blacklist.found) == 1, '', 's'), paste0(blacklist[blacklist.found], collapse = ', ')))
+    blacklist.found <- sapply(sprintf('\\(`?%s`?\\)', blacklist), function(x) any(grepl(x, src)))
+    blacklist.found <- which(blacklist.found == TRUE)
+    if (length(blacklist.found) > 0)
+        stop(sprintf('Forbidden function%s called: %s.', ifelse(length(blacklist.found) == 1, '', 's'), paste0(blacklist[blacklist.found], collapse = ', ')))
     
     ## check for quoted forbidden functions: e.g. "get"()
-    #calls.forbidden <- gsub('"|`|\'', '', strings)  %in% blacklist
-    #if (any(calls.forbidden))
-    #    stop(sprintf('Forbidden function%s quoted: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(strings[which(calls.forbidden)], collapse = ', ')))
+    calls.forbidden <- gsub('"|`|\'', '', strings)  %in% blacklist
+    if (any(calls.forbidden))
+        stop(sprintf('Forbidden function%s quoted: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(strings[which(calls.forbidden)], collapse = ', ')))
     
     ## check for forbidden functions used as symbol: e.g. lappy(foo, get)
     calls.forbidden <- vars %in% blacklist
@@ -55,16 +55,16 @@ sandbox <- function(src, time.limit = 10) {
         stop(sprintf('Forbidden function%s used as symbol: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(vars[which(calls.forbidden)], collapse = ', ')))
     
     ## check for forks of forbidden functions: e.g. x <- get
-    #blacklist.found <- sapply(sprintf('(<-|=)[ \t`\\(]*%s[ \t`;\\)]*$', blacklist), function(x) any(grepl(x, src)))
-    #blacklist.found <- which(blacklist.found == TRUE)
-    #if (length(blacklist.found) > 0)
-    #    stop(sprintf('Forbidden function%s attempted to fork: %s.', ifelse(length(blacklist.found) == 1, ' was', 's were'), paste0(blacklist[blacklist.found], collapse = ', ')))
+    blacklist.found <- sapply(sprintf('(<-|=)[ \t`\\(]*%s[ \t`;\\)]*$', blacklist), function(x) any(grepl(x, src)))
+    blacklist.found <- which(blacklist.found == TRUE)
+    if (length(blacklist.found) > 0)
+        stop(sprintf('Forbidden function%s attempted to fork: %s.', ifelse(length(blacklist.found) == 1, ' was', 's were'), paste0(blacklist[blacklist.found], collapse = ', ')))
     
     ## check for forbidden function calls in static strings: e.g. "get()"
-    #blacklist.found <- sapply(sprintf('%s[ \t`\'"]*\\(', blacklist), function(x) any(grepl(x, strings)))
-    #blacklist.found <- which(blacklist.found == TRUE)
-    #if (length(blacklist.found) > 0)
-    #    stop(sprintf('Forbidden call to function%s attempted to build: %s.', ifelse(length(blacklist.found) == 1, '\'s name was', 's\' names were'), paste0(blacklist[blacklist.found], collapse = ', ')))
+    blacklist.found <- sapply(sprintf('%s[ \t`\'"]*\\(', blacklist), function(x) any(grepl(x, strings)))
+    blacklist.found <- which(blacklist.found == TRUE)
+    if (length(blacklist.found) > 0)
+        stop(sprintf('Forbidden call to function%s attempted to build: %s.', ifelse(length(blacklist.found) == 1, '\'s name was', 's\' names were'), paste0(blacklist[blacklist.found], collapse = ', ')))
     
     ## prepare a custom environment with dummy functions
     sandboxed.env <- new.env()
