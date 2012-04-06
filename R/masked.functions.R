@@ -96,17 +96,16 @@ as.formula.masked <- function(object, env = parent.frame()) {
 
 #' Masked eval
 #' @param expr see \code{eval}
-#' @param ... see \code{eval}
-eval.masked <- evalq.masked <- local.masked <- function(expr, envir, enclos) {
+#' @param envir see \code{eval}
+#' @param enclos see \code{eval}
+eval.masked <- function(expr, envir, enclos) {
     
     if (!missing(envir) | !missing(enclos))
         stop('Tried to leave sandboxed environment.')
     
     mc <- match.call()
     sandbox(deparse(substitute(expr)))
-    mc[[1]] <- as.name(sub('\\.masked$', '', mc[[1]]))
-    eval(mc)
-    
+        
 }
 
 

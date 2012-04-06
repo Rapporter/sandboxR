@@ -12,7 +12,7 @@ test_that('paste/sprintf created functions', {
             expect_error(sandbox('paste("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")'))
         })
 
-test_that('paste/sprintf created functions', {
+test_that('forked functions', {
             expect_error(sandbox(c("x <- system", "x('ls')")))
         })
 
@@ -30,7 +30,7 @@ test_that('lm', {
         })
 
 test_that('forked functions', {
-            expect_error(sandbox(c('x <- `eval`', 'x(runif(10))')))
+            expect_error(sandbox(c('x <- `eval.parent`', 'x(runif(10))')))
             expect_error(sandbox("x <- (system)"))
         })
 
@@ -45,6 +45,7 @@ test_that('quoted functions', {
 
 test_that('functions as symbols', {
             expect_error(sandbox('lapply("/etc/passwd", readLines)'))
+            expect_error(sandbox('lapply("whoami", system, intern = TRUE)'))
         })
 
 test_that('check elapsed time', {

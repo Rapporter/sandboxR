@@ -33,7 +33,9 @@ var examples = [
     "assign('x', mtcars)\nhist(x$hp)\nsummary(x$hp)",
     "x <- get('mtcars')\nhist(x$hp)\nsummary(x$hp)",
     "x <- eval(get('mtcars'))\nhist(x$hp)\nsummary(x$hp)",
-    "x <- eval(get('mtcars'), envir = 11)\nhist(x$hp)\nsummary(x$hp)"
+    "x <- eval(get('mtcars'), envir = 11)\nhist(x$hp)\nsummary(x$hp)",
+    "get('base::system')",
+    "get('system')"
 ];
 
 $(document).ready(function(){
