@@ -12,6 +12,9 @@
 #' @export
 sandbox <- function(src, time.limit = 10) {
     
+    ## saving global options
+    opts.bak <- options()
+    
     ## pre-checking source for malicious code
     sandbox.pretest(src)
 
@@ -20,6 +23,9 @@ sandbox <- function(src, time.limit = 10) {
     
     ## evaluate
     res <- tryCatch(eval(parse(text = src), envir = sandbox.env()), error = function(e) e)
+    
+    ## setting back global options and removing time limit
+    options(opts.bak)
     setTimeLimit(elapsed = Inf)
     
     ## return
