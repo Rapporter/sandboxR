@@ -16,7 +16,7 @@
  * ~~eval~~
  * exists
  * is.call, as.call, call
- * library, require
+ * ~~library, require~~
  * rm, remove (_wontfix_: expressions run in a temporary environment, `gc` will arrange that automatically)
 
 ## Stats, graphics, grDevices, datasets

@@ -55,8 +55,10 @@ The blacklisted functions are checked in the passed R sources:
 As being a *pre-alpha* release you would find too much restrictions in this approach ATM, as for example the following functions are also blacklisted (for simplicity - **later will be enabled** for sure):
 
  * ~~get~~, mget
- * assign
- * attach, detach
+ * ~~assign~~
+ * etc.
+
+For a detailed workflow pand, please check out my [TODO file](https://github.com/daroczig/sandboxR/blob/master/TODO.md)!
 
 Also as I am not sure in this package's success, only base packages (`base`, `utils`, `methods`, `stats`, `graphics` and `grDevices`) are addressed.
 

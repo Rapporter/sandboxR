@@ -166,3 +166,57 @@ objects.masked <- ls.masked <- function(...) {
     setdiff(res, c(as.character(unlist(commands.blacklist())), sub('\\.masked$', '', ls(pattern = ".*\\.masked", envir = getNamespace("sandboxR")))))
 
 }
+
+
+#' Masked library
+#' @param ... see \code{library}
+library.masked <- function(...) {
+    
+    mc <- match.call(library)
+    
+    if (!is.null(mc$pos) | !is.null(mc$lib.loc))
+        stop('Tried to leave sandboxed environment.')
+    
+    if (!is.null(mc$help))
+        stop('Sorry, read docs on localhost.')
+    
+    if (!is.null(mc$package)) {
+        if (!is.character(mc$package))
+            mc$package <- deparse(mc$package)
+        if (!mc$package %in% names(commands.blacklist()))
+            stop('Tried to load a forbidden package.')
+    } else {
+        return(names(commands.blacklist()))
+    }
+    
+    mc[[1]] <- quote(library)
+    res <- eval(mc)
+    
+    return(invisible(res))
+    
+}
+
+
+#' Masked require
+#' @param ... see \code{require}
+require.masked <- function(...) {
+    
+    mc <- match.call(require)
+    
+    if (!is.null(mc$lib.loc))
+        stop('Tried to leave sandboxed environment.')
+     if (!is.null(mc$package)) {
+        if (!is.character(mc$package))
+            mc$package <- deparse(mc$package)
+        if (!mc$package %in% names(commands.blacklist()))
+            stop('Tried to load a forbidden package.')
+    } else {
+        return(names(commands.blacklist()))
+    }
+    
+    mc[[1]] <- quote(require)
+    res <- eval(mc)
+    
+    return(invisible(res))
+    
+}

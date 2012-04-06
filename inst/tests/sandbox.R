@@ -1,3 +1,22 @@
+context('normal behavior (no filtering should happen)')
+test_that('called functions', {
+            expect_output(sandbox("as.formula('1~1')"), '.*')
+            expect_output(sandbox("lm(mtcars)"), '.*')
+            expect_output(sandboxR:::model.frame.masked(mtcars), '.*')
+            expect_output(sandboxR:::as.formula.masked('1~1'), '.*')
+            expect_output(sandboxR:::as.formula.masked(1~1), '.*')
+            expect_output(sandboxR:::formula.masked('1~1'), '.*')
+            expect_output(sandboxR:::formula.masked(1~1), '.*')
+            expect_output(sandboxR:::paste.masked(letters), '.*')
+            expect_output(sandbox("(get)('mtcars')"), '.*')
+            expect_output(sandbox("(`get`)('mtcars')"), '.*')
+            expect_output(sandbox("x <- (get)"), '.*')
+            expect_output(sandbox("a <- 2; a"), '2')
+            expect_output(sandbox(c('x <- eval', 'x(runif(10))')), '.*')
+            expect_output(sandbox(c('x <- runif', 'x(10)')), '.*')
+        })
+
+
 context('filtering blacklisted functions')
 
 test_that('called functions', {
@@ -45,7 +64,7 @@ test_that('functions as symbols', {
             expect_error(sandbox('lapply("whoami", system, intern = TRUE)'))
         })
 
-context('checking forkbomb')
+context('defusing forkbomb')
 
 test_that('check elapsed time', {
             expect_error(sandbox("while(TRUE) mean(1:10)", 1))
@@ -65,31 +84,25 @@ test_that('assign', {
         })
 
 test_that('get', {
+            expect_output(sandbox("get('mtcars')"), '.*')
             expect_error(sandbox("get('system')"))
             expect_error(sandbox("get('base::system')"))
         })
 
 test_that('ls', {
             expect_output(sandbox('ls()'), '.*')
+            expect_error(sandbox('ls(pos = 11)'))
             expect_output(sandbox('x<-1;ls()'), '.*')
             expect_output(sandbox('x<-runif;y<-1:20;ls()'), '.*')
         })
 
-context('checking normal behavior')
-
-test_that('called functions', {
-            expect_output(sandbox("as.formula('1~1')"), '.*')
-            expect_output(sandbox("lm(mtcars)"), '.*')
-            expect_output(sandboxR:::model.frame.masked(mtcars), '.*')
-            expect_output(sandboxR:::as.formula.masked('1~1'), '.*')
-            expect_output(sandboxR:::as.formula.masked(1~1), '.*')
-            expect_output(sandboxR:::formula.masked('1~1'), '.*')
-            expect_output(sandboxR:::formula.masked(1~1), '.*')
-            expect_output(sandboxR:::paste.masked(letters), '.*')
-            expect_output(sandbox("(get)('mtcars')"), '.*')
-            expect_output(sandbox("(`get`)('mtcars')"), '.*')
-            expect_output(sandbox("x <- (get)"), '.*')
-            expect_output(sandbox("a <- 2; a"), '2')
-            expect_output(sandbox(c('x <- eval', 'x(runif(10))')), '.*')
-            expect_output(sandbox(c('x <- runif', 'x(10)')), '.*')
+test_that('library/require', {
+            expect_output(sandbox('library()'), '.*')
+            expect_output(sandbox('library(base)'), '.*')
+            expect_output(sandbox('library(base, verbose = TRUE)'), '.*')
+            expect_output(sandbox('library("base")'), '.*')
+            expect_error(sandbox('library(RCurl)'))
+            expect_error(sandbox('library("RCurl")'))
+            expect_output(sandbox('require(stats)'), '.*')
+            expect_error(sandbox('require(RCurl)'))
         })
