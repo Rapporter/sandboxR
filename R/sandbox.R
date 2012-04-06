@@ -12,79 +12,19 @@
 #' @export
 sandbox <- function(src, time.limit = 10) {
     
-    if (missing(src))
-        stop('Nothing provided to check.')
-    
-    f <- textConnection(src)
-    src.r <- suppressWarnings(tryCatch(parser(f), error = function(e) NULL))
-    close(f)
-    
-    if (is.null(nrow(attr(src.r, 'data'))))
-        stop('Syntax error.')
-    
-    p       <- attr(src.r, 'data')
-    calls   <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_FUNCTION_CALL')]))
-    strings <- sort(unique(p$text[which(p$token.desc == 'STR_CONST')]))
-    vars    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL')]))
-    pkgs    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_PACKAGE')]))
-
-    if (length(pkgs) > 0)
-        stop(sprintf('Tried to call at least one function outside of active namespace from package%s: %s', ifelse(length(pkgs) == 1, '', 's'), paste0(pkgs, collapse = ', ')))
-    
-    blacklist <- as.character(unlist(commands.blacklist()))
-    
-    ## check for forbidden function calls: e.g. get()
-    calls.forbidden <- calls %in% blacklist
-    if (any(calls.forbidden))
-        stop(sprintf('Forbidden function%s called: %s.', ifelse(sum(calls.forbidden) == 1, '', 's'), paste0(calls[which(calls.forbidden)], collapse = ', ')))
-
-    ## check for unexposed forbidden function calls: e.g. (get)()
-    blacklist.found <- sapply(sprintf('\\(`?%s`?\\)', blacklist), function(x) any(grepl(x, src)))
-    blacklist.found <- which(blacklist.found == TRUE)
-    if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden function%s called: %s.', ifelse(length(blacklist.found) == 1, '', 's'), paste0(blacklist[blacklist.found], collapse = ', ')))
-    
-    ## check for quoted forbidden functions: e.g. "get"()
-    calls.forbidden <- gsub('"|`|\'', '', strings)  %in% blacklist
-    if (any(calls.forbidden))
-        stop(sprintf('Forbidden function%s quoted: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(strings[which(calls.forbidden)], collapse = ', ')))
-    
-    ## check for forbidden functions used as symbol: e.g. lappy(foo, get)
-    calls.forbidden <- vars %in% blacklist
-    if (any(calls.forbidden))
-        stop(sprintf('Forbidden function%s used as symbol: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(vars[which(calls.forbidden)], collapse = ', ')))
-    
-    ## check for forks of forbidden functions: e.g. x <- get
-    blacklist.found <- sapply(sprintf('(<-|=)[ \t`\\(]*%s[ \t`;\\)]*$', blacklist), function(x) any(grepl(x, src)))
-    blacklist.found <- which(blacklist.found == TRUE)
-    if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden function%s attempted to fork: %s.', ifelse(length(blacklist.found) == 1, ' was', 's were'), paste0(blacklist[blacklist.found], collapse = ', ')))
-    
-    ## check for forbidden function calls in static strings: e.g. "get()"
-    blacklist.found <- sapply(sprintf('%s[ \t`\'"]*\\(', blacklist), function(x) any(grepl(x, strings)))
-    blacklist.found <- which(blacklist.found == TRUE)
-    if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden call to function%s attempted to build: %s.', ifelse(length(blacklist.found) == 1, '\'s name was', 's\' names were'), paste0(blacklist[blacklist.found], collapse = ', ')))
-    
-    ## prepare a custom environment with dummy functions
-    sandboxed.env <- new.env()
-    for (cmd in blacklist)
-        eval(parse(text = sprintf("%s <- function(x) stop('You have successfully by-passed my regexps but after all calling a still forbidden function: %s')", cmd, cmd)), envir = sandboxed.env)
-
-    ## populate environment with masked functions
-    for (cmd in ls(pattern = ".*\\.masked", envir = getNamespace("sandboxR")))
-        eval(parse(text = sprintf("%s <- sandboxR:::%s", sub('\\.masked$', '', cmd), cmd)), envir = sandboxed.env)
+    ## pre-checking source for malicious code
+    sandbox.pretest(src)
 
     ## check elapsed time
     setTimeLimit(elapsed = time.limit)
     
     ## evaluate
-    res <- tryCatch(eval(parse(text = src), envir = sandboxed.env), error = function(e) e)
-    
+    res <- tryCatch(eval(parse(text = src), envir = sandbox.env()), error = function(e) e)
     setTimeLimit(elapsed = Inf)
+    
+    ## return
     if (any(class(res) == 'error'))
         stop(res[[1]])
-    
     return(res)
     
 }
@@ -131,4 +71,96 @@ commands.blacklist <- function(pkg) {
     
     return(blacklist[pkg])
     
+}
+
+
+#' Sandboxed environment
+#' 
+#' This function returns a special environment pre-loaded with bunch of forked functions from \code{base}, \code{stats}, \code{graphics} etc. to act as a jail for later evaluation.
+#' 
+#' Some of the forked functions \code{stop}s by default (to prevent using those inside the environment), for a full list see \code{\link{commands.blacklist}}. Other functions (ending in \code{masked}) behaves differently then usual: some parameters are forbidden (like \code{eval}'s \code{env}) to prevent breaking out from the sandbox, some parameters and returned values are checked for "malicious" signs.
+#' @param blacklist character vector of function names which should be banned 
+#' @return environment 
+#' @export
+sandbox.env <- function(blacklist = as.character(unlist(commands.blacklist()))) {
+
+    ## prepare a custom environment with dummy functions
+    sandboxed.env <- new.env()
+    for (cmd in blacklist)
+        eval(parse(text = sprintf("%s <- function(x) stop('You have successfully by-passed my regexps but after all calling a still forbidden function: %s')", cmd, cmd)), envir = sandboxed.env)
+
+    ## populate environment with masked functions
+    for (cmd in ls(pattern = ".*\\.masked", envir = getNamespace("sandboxR")))
+        eval(parse(text = sprintf("%s <- sandboxR:::%s", sub('\\.masked$', '', cmd), cmd)), envir = sandboxed.env)
+
+    return(sandboxed.env)
+
+}
+
+
+#' Checking expressions for malicious code
+#' 
+#' This function tests a character vector of R commands agains a list of banned functions and \code{stop}s if any found.
+#' @param src character vector of R commands
+#' @param blacklist character vector of function names which should be banned
+#' @return invisibly \code{TRUE} if tests passed 
+#' @export
+sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blacklist()))) {
+
+    ## dummy checks
+    if (missing(src))
+        stop('Nothing provided to check.')
+
+    ## parse elements of src
+    f <- textConnection(src)
+    src.r <- suppressWarnings(tryCatch(parser(f), error = function(e) NULL))
+    close(f)
+    if (is.null(nrow(attr(src.r, 'data'))))
+        stop('Syntax error.')
+    p       <- attr(src.r, 'data')
+    calls   <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_FUNCTION_CALL')]))
+    strings <- sort(unique(p$text[which(p$token.desc == 'STR_CONST')]))
+    vars    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL')]))
+    pkgs    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_PACKAGE')]))
+
+    ## filtering foreign calls
+    if (length(pkgs) > 0)
+        stop(sprintf('Tried to call at least one function outside of active namespace from package%s: %s', ifelse(length(pkgs) == 1, '', 's'), paste0(pkgs, collapse = ', ')))
+
+    ## filtering forbidden function calls: e.g. get()
+    calls.forbidden <- calls %in% blacklist
+    if (any(calls.forbidden))
+        stop(sprintf('Forbidden function%s called: %s.', ifelse(sum(calls.forbidden) == 1, '', 's'), paste0(calls[which(calls.forbidden)], collapse = ', ')))
+
+    ## filtering forbidden functions used as symbol: e.g. lappy(foo, get)
+    calls.forbidden <- vars %in% blacklist
+    if (any(calls.forbidden))
+        stop(sprintf('Forbidden function%s used as symbol: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(vars[which(calls.forbidden)], collapse = ', ')))
+
+    ## TODO: eliminate all below
+    ## filtering unexposed forbidden function calls: e.g. (get)()
+    blacklist.found <- sapply(sprintf('\\(`?%s`?\\)', blacklist), function(x) any(grepl(x, src)))
+    blacklist.found <- which(blacklist.found == TRUE)
+    if (length(blacklist.found) > 0)
+        stop(sprintf('Forbidden function%s called: %s.', ifelse(length(blacklist.found) == 1, '', 's'), paste0(blacklist[blacklist.found], collapse = ', ')))
+
+    ## filtering quoted forbidden functions: e.g. "get"()
+    calls.forbidden <- gsub('"|`|\'', '', strings)  %in% blacklist
+    if (any(calls.forbidden))
+        stop(sprintf('Forbidden function%s quoted: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(strings[which(calls.forbidden)], collapse = ', ')))
+
+    ## filtering forks of forbidden functions: e.g. x <- get
+    blacklist.found <- sapply(sprintf('(<-|=)[ \t`\\(]*%s[ \t`;\\)]*$', blacklist), function(x) any(grepl(x, src)))
+    blacklist.found <- which(blacklist.found == TRUE)
+    if (length(blacklist.found) > 0)
+        stop(sprintf('Forbidden function%s attempted to fork: %s.', ifelse(length(blacklist.found) == 1, ' was', 's were'), paste0(blacklist[blacklist.found], collapse = ', ')))
+
+    ## filtering forbidden function calls in static strings: e.g. "get()"
+    blacklist.found <- sapply(sprintf('%s[ \t`\'"]*\\(', blacklist), function(x) any(grepl(x, strings)))
+    blacklist.found <- which(blacklist.found == TRUE)
+    if (length(blacklist.found) > 0)
+        stop(sprintf('Forbidden call to function%s attempted to build: %s.', ifelse(length(blacklist.found) == 1, '\'s name was', 's\' names were'), paste0(blacklist[blacklist.found], collapse = ', ')))
+
+    return(invisible(TRUE))
+
 }
