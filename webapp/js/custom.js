@@ -28,7 +28,12 @@ var examples = [
     "lm(read.table('/etc/passwd'))",
     "out <- paste(\"1 ~ system\", \" x\")\nout <- gsub(\"x\", \"('echo 1')\", out)\nlm(out)",
     "out <- paste(\"1 ~ print(read.table\", \" x)\")\nout <- gsub(\"x\", \"('/etc/passwd')\", out)\nlm(out)",
-    "out <- paste(\"1 ~ print(system\", \" x)\")\nout <- gsub(\"x\", \"('echo 1')\", out)\nt.test(formula = as.formula(out))"
+    "out <- paste(\"1 ~ print(system\", \" x)\")\nout <- gsub(\"x\", \"('echo 1')\", out)\nt.test(formula = as.formula(out))",
+    "'[[.go' <<- function(x,y) {\n g <- get(\"get\", pos=11)\n h <- g(objects(pos=11)[871], pos=11)\n print(h('/sandbox/secret'))\n\n }\n\nx <- c(1)\nattr(x, 'class') <- c('go','error')\n\nreturn(x)",
+    "assign('x', mtcars)\nhist(x$hp)\nsummary(x$hp)",
+    "x <- get('mtcars')\nhist(x$hp)\nsummary(x$hp)",
+    "x <- eval(get('mtcars'))\nhist(x$hp)\nsummary(x$hp)",
+    "x <- eval(get('mtcars'), envir = 11)\nhist(x$hp)\nsummary(x$hp)"
 ];
 
 $(document).ready(function(){
