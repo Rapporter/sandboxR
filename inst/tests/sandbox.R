@@ -51,6 +51,10 @@ test_that('check elapsed time', {
             expect_error(sandbox("while(TRUE) mean(1:10)", 1))
         })
 
+test_that('eval checks', {
+            expect_error(sandbox("eval(mtcars, envir = .GlobalEnv)"))
+        })
+
 context('checking normal behaviour')
 
 test_that('called functions', {
@@ -65,4 +69,5 @@ test_that('called functions', {
             expect_output(sandbox("(get)('mtcars')"), '.*')
             expect_output(sandbox("(`get`)('mtcars')"), '.*')
             expect_output(sandbox("x <- (get)"), '.*')
+            expect_output(sandbox("eval(mtcars)"), '.*')
         })

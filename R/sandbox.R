@@ -29,20 +29,20 @@ sandbox <- function(src, time.limit = 10) {
     pkgs    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_PACKAGE')]))
 
     if (length(pkgs) > 0)
-        stop(sprintf('Tried to call at least one function outside of namespace from package%s: %s', ifelse(length(pkgs) == 1, '', 's'), paste0(pkgs, collapse = ', ')))
+        stop(sprintf('Tried to call at least one function outside of active namespace from package%s: %s', ifelse(length(pkgs) == 1, '', 's'), paste0(pkgs, collapse = ', ')))
     
     blacklist <- as.character(unlist(commands.blacklist()))
     
     ## check for forbidden function calls: e.g. get()
     calls.forbidden <- calls %in% blacklist
     if (any(calls.forbidden))
-        stop(sprintf('Forbidden function%s called: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(calls[which(calls.forbidden)], collapse = ', ')))
+        stop(sprintf('Forbidden function%s called: %s.', ifelse(sum(calls.forbidden) == 1, '', 's'), paste0(calls[which(calls.forbidden)], collapse = ', ')))
 
     ## check for unexposed forbidden function calls: e.g. (get)()
     blacklist.found <- sapply(sprintf('\\(`?%s`?\\)', blacklist), function(x) any(grepl(x, src)))
     blacklist.found <- which(blacklist.found == TRUE)
     if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden function%s called: %s.', ifelse(length(blacklist.found) == 1, ' was', 's were'), paste0(blacklist[blacklist.found], collapse = ', ')))
+        stop(sprintf('Forbidden function%s called: %s.', ifelse(length(blacklist.found) == 1, '', 's'), paste0(blacklist[blacklist.found], collapse = ', ')))
     
     ## check for quoted forbidden functions: e.g. "get"()
     calls.forbidden <- gsub('"|`|\'', '', strings)  %in% blacklist

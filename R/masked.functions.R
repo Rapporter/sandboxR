@@ -98,10 +98,11 @@ as.formula.masked <- function(object, env = parent.frame()) {
 #' @param expr see \code{eval}
 #' @param ... see \code{eval}
 eval.masked <- evalq.masked <- local.masked <- function(expr, envir, enclos) {
-    if (!missing(envir) | !missing(enclose))
+    if (!missing(envir) | !missing(enclos))
         stop('Tried to leave sandboxed environment.')
     mc <- match.call()
     sandbox(deparse(substitute(expr)))
+    mc[[1]] <- as.name(sub('\\.masked$', '', mc[[1]]))
     eval(mc)
 }
 
@@ -115,4 +116,7 @@ get.masked <- function(x, envir, ...) {
         stop('Tried to leave sandboxed environment.')
     if (x %in% as.character(unlist(commands.blacklist())))
         stop(sprintf('Tried to get a forbidden function: %s.', x))
+    mc <- match.call()
+    mc[[1]] <- quote(get)
+    eval(mc)
 }
