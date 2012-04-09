@@ -85,6 +85,8 @@ test_that('assign', {
 
 test_that('get', {
             expect_output(sandbox("get('mtcars')"), '.*')
+            expect_output(sandbox("x<-1; get('x')"), '.*')
+            expect_output(sandbox(c("x<-1", "get('x')")), '.*')
             expect_error(sandbox("get('system')"))
             expect_error(sandbox("get('base::system')"))
         })

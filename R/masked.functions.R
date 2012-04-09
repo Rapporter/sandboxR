@@ -83,6 +83,21 @@ formula.masked <- function(x, ...) {
 
 
 #' Masked as.formula
+#' @param ... see \code{as.formula}
+as.formula.masked <- function(...) {
+    
+    mc <- match.call()
+    
+    if (is.character(mc$object))
+        sandbox(x)
+    
+    mc[[1]] <- quote(as.formula)
+    eval(mc)
+    
+}
+
+
+#' Masked as.formula
 #' @param object see \code{as.formula}
 #' @param env see \code{as.formula}
 as.formula.masked <- function(object, env = parent.frame()) {
@@ -115,13 +130,15 @@ eval.masked <- function(expr, envir, enclos) {
 #' @param envir see \code{get}
 #' @param ... see \code{get}
 get.masked <- function(x, pos, envir, ...) {
+
+    mc <- match.call()
     
-    if (!missing(envir)| !missing(pos))
+    if (!is.null(mc$envir)| !is.null(mc$pos))
         stop('Tried to leave sandboxed environment.')
     
-    sandbox(x)
+    e <- parent.frame()
+    sandbox(mc$x, e)
     
-    mc <- match.call()
     mc[[1]] <- quote(get)
     mc$pos <- parent.frame()
     eval(mc)
@@ -140,7 +157,8 @@ assign.masked <- function(x, value, ...) {
     if (!is.null(mc$envir) | !is.null(mc$pos))
         stop('Tried to leave sandboxed environment.')
     
-    sandbox(deparse(substitute(value)))
+    e <- parent.frame()
+    sandbox(deparse(substitute(value)), e)
     
     mc[[1]] <- quote(assign)
     mc$pos <- parent.frame()

@@ -2,10 +2,14 @@
 \alias{sandbox}
 \title{Eval in sandbox}
 \usage{
-  sandbox(src, time.limit = 10)
+  sandbox(src, envir, time.limit = 10)
 }
 \arguments{
   \item{src}{character vector of R commands}
+
+  \item{envir}{the environment where the calls would be
+  tested. This should be omitted or preset with
+  \code{\link{sandbox.env}}.}
 
   \item{time.limit}{limit on the elapsed time while running
   \code{src}}

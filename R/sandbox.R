@@ -1,5 +1,6 @@
 #' Eval in sandbox 
 #' @param src character vector of R commands
+#' @param envir the environment where the calls would be tested. This should be omitted or preset with \code{\link{sandbox.env}}. 
 #' @param time.limit limit on the elapsed time while running \code{src}
 #' @examples \dontrun{
 #' sandbox('paste(rev(c(")", "whatever", "(", "m", "e", "t", "s", "y", "s")), sep = "", collapse = "")')
@@ -10,7 +11,10 @@
 #' sandbox('lm("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")')
 #' }
 #' @export
-sandbox <- function(src, time.limit = 10) {
+sandbox <- function(src, envir, time.limit = 10) {
+    
+    if (missing(envir))
+        envir <- sandbox.env() 
     
     ## saving global options
     opts.bak <- options()
@@ -22,7 +26,7 @@ sandbox <- function(src, time.limit = 10) {
     setTimeLimit(elapsed = time.limit)
     
     ## evaluate
-    res <- tryCatch(eval(parse(text = src), envir = sandbox.env()), error = function(e) e)
+    res <- tryCatch(eval(parse(text = src), envir = envir), error = function(e) e)
     
     ## setting back global options and removing time limit
     options(opts.bak)
@@ -59,6 +63,8 @@ commands.blacklist <- function(pkg) {
     ## TODO:
     ##  * look over if really all function is to be blacklisted
     ##  * free up: mget
+    
+    ## add: masked functions' methods below
     
     blacklist <- list(
         base        = c('.__H__.cbind', '.__H__.rbind', '.amatch_bounds', '.amatch_costs', '.C', '.cache_class', '.Call', '.Call.graphics', '.colMeans', '.colSums', '.decode_numeric_version', '.Defunct', '.deparseOpts', '.Deprecated', '.difftime', '.doTrace', '.dynLibs', '.encode_numeric_version', '.expand_R_libs_env_var', '.Export', '.External', '.External.graphics', '.find.package', '.First.sys', '.Fortran', '.getRequiredPackages', '.getRequiredPackages2', '.gt', '.gtn', '.handleSimpleError', '.Import', '.ImportFrom', '.Internal', '.isMethodsDispatchOn', '.isOpen', '.kronecker', '.libPaths', '.make_numeric_version', '.makeMessage', '.mergeExportMethods', '.mergeImportMethods', '.NotYetImplemented', '.NotYetUsed', '.OptRequireMethods', '.packages', '.packageStartupMessage', '.path.package', '.POSIXct', '.POSIXlt', '.Primitive', '.primTrace', '.primUntrace', '.readRDS', '.row_names_info', '.rowMeans', '.rowSums', '.S3method', '.saveRDS', '.Script', '.set_row_names', '.signalSimpleWarning', '.standard_regexps', '.subset', '.subset2', '.TAOCP1997init', 'as.call', 'asNamespace', 'asS3', 'asS4', 'attach', 'attachNamespace', 'autoload', 'autoloader', 'baseenv', 'bindingIsActive', 'bindingIsLocked', 'bindtextdomain', 'body', 'browser', 'browserCondition', 'browserSetDebug', 'browserText', 'builtins', 'bzfile', 'call', 'cat', 'chartr', 'close', 'close.connection', 'close.srcfile', 'close.srcfilealias', 'closeAllConnections', 'Cstack_info', 'debug', 'debugonce', 'deparse', 'detach', 'dget', 'dir', 'dir.create', 'do.call', 'dput', 'dump', 'dyn.load', 'dyn.unload', 'enc2native', 'enc2utf8', 'encodeString', 'Encoding', 'env.profile', 'environment', 'environmentIsLocked', 'environmentName', 'eval.parent', 'evalq', 'exists', 'fifo', 'file', 'file.access', 'file.append', 'file.choose', 'file.copy', 'file.create', 'file.exists', 'file.info', 'file.link', 'file.path', 'file.remove', 'file.rename', 'file.show', 'file.symlink', 'find.package', 'findPackageEnv', 'flush', 'flush.connection', 'force', 'formals', 'gc', 'gc.time', 'gcinfo', 'gctorture', 'gctorture2', 'getAllConnections', 'getCallingDLL', 'getCallingDLLe', 'getCConverterDescriptions', 'getCConverterStatus', 'getConnection', 'getDLLRegisteredRoutines', 'getDLLRegisteredRoutines.character', 'getDLLRegisteredRoutines.DLLInfo', 'getElement', 'geterrmessage', 'getExportedValue', 'getHook', 'getLoadedDLLs', 'getNamespace', 'getNamespaceExports', 'getNamespaceImports', 'getNamespaceInfo', 'getNamespaceName', 'getNamespaceUsers', 'getNamespaceVersion', 'getNativeSymbolInfo', 'getNumCConverters', 'getRversion', 'getSrcLines', 'getTaskCallbackNames', 'gettext', 'gettextf', 'getwd', 'globalenv', 'gzcon', 'gzfile', 'iconv', 'iconvlist', 'importIntoEnv', 'interactive', 'intToUtf8', 'invokeRestart', 'invokeRestartInteractively', 'is.call', 'is.loaded', 'isBaseNamespace', 'isdebugged', 'isIncomplete', 'isNamespace', 'isSeekable', 'l10n_info', 'lazyLoad', 'lazyLoadDBexec', 'lazyLoadDBfetch', 'library.dynam', 'library.dynam.unload', 'licence', 'license', 'list.dirs', 'list2env', 'load', 'loadedNamespaces', 'loadingNamespaceInfo', 'loadNamespace', 'lockBinding', 'lockEnvironment', 'local', 'makeActiveBinding', 'manglePackageName', 'mem.limits', 'memCompress', 'memDecompress', 'memory.profile', 'mget', 'namespaceExport', 'namespaceImport', 'namespaceImportClasses', 'namespaceImportFrom', 'namespaceImportMethods', 'new.env', 'NextMethod', 'ngettext', 'on.exit', 'open', 'open.connection', 'open.srcfile', 'open.srcfilealias', 'open.srcfilecopy', 'package_version', 'packageEvent', 'packageHasNamespace', 'packageStartupMessage', 'parent.env', 'parent.frame', 'parse', 'parseNamespaceFile', 'path.expand', 'path.package', 'pipe', 'pos.to.env', 'pushBack', 'pushBackLength', 'q', 'quit', 'R_system_version', 'R.home', 'R.Version', 'rawConnection', 'rawConnectionValue', 'read.dcf', 'readBin', 'readChar', 'readline', 'readLines', 'readRDS', 'readRenviron', 'Recall', 'registerS3method', 'registerS3methods', 'remove', 'removeCConverter', 'removeTaskCallback', 'requireNamespace', 'restartDescription', 'restartFormals', 'retracemem', 'rm', 'RNGkind', 'RNGversion', 'save', 'save.image', 'saveRDS', 'scan', 'search', 'searchpaths', 'seek', 'serialize', 'setHook', 'setNamespaceInfo', 'setSessionTimeLimit', 'setTimeLimit', 'setwd', 'showConnections', 'sink', 'sink.number', 'socketConnection', 'socketSelect', 'source', 'srcfile', 'srcfilealias', 'srcfilecopy', 'srcref', 'sys.call', 'sys.calls', 'Sys.chmod', 'Sys.Date', 'sys.frame', 'sys.frames', 'sys.function', 'Sys.getenv', 'Sys.getlocale', 'Sys.getpid', 'Sys.glob', 'Sys.info', 'sys.load.image', 'Sys.localeconv', 'sys.nframe', 'sys.on.exit', 'sys.parent', 'sys.parents', 'Sys.readlink', 'sys.save.image', 'Sys.setenv', 'Sys.setFileTime', 'Sys.setlocale', 'Sys.sleep', 'sys.source', 'sys.status', 'Sys.time', 'Sys.timezone', 'Sys.umask', 'Sys.unsetenv', 'Sys.which', 'system', 'system.file', 'system.time', 'system2', 'taskCallbackManager', 'tempdir', 'tempfile', 'testPlatformEquivalence', 'textConnection', 'textConnectionValue', 'topenv', 'trace', 'traceback', 'tracemem', 'truncate', 'truncate.connection', 'undebug', 'unloadNamespace', 'unlockBinding', 'unserialize', 'untrace', 'untracemem', 'unz', 'url', 'UseMethod', 'utf8ToInt', 'warnings', 'withCallingHandlers', 'write', 'write.dcf', 'writeBin', 'writeChar', 'writeLines', 'xzfile', 'unlink', 'list.files', 'charToRaw', 'rawToChar', 'rawShift', 'rawToBits', 'intToBits', 'packBits'),

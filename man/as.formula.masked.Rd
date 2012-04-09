@@ -3,13 +3,19 @@
 \title{Masked as.formula}
 \usage{
   as.formula.masked(object, env = parent.frame())
+
+  as.formula.masked(object, env = parent.frame())
 }
 \arguments{
+  \item{...}{see \code{as.formula}}
+
   \item{object}{see \code{as.formula}}
 
   \item{env}{see \code{as.formula}}
 }
 \description{
+  Masked as.formula
+
   Masked as.formula
 }
 

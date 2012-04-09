@@ -11,7 +11,7 @@
  * ~~assign~~
  * ~~ls~~
  * attach, detach (_wontfix_)
- * chartr (_can be done even now by removing masked `paste`, `sprintf` etc._)
+ * chartr (_can be done even now by removing masked `paste`, `sprintf` etc._), rawToChar (etc.)
  * parse, deparse
  * ~~eval~~
  * exists
