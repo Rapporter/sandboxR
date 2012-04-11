@@ -26,7 +26,7 @@ sandbox <- function(src, envir, time.limit = 10) {
     setTimeLimit(elapsed = time.limit)
     
     ## evaluate
-    res <- tryCatch(eval(parse(text = src), envir = envir), error = function(e) e)
+    res <- tryCatch(base::eval(base::parse(text = src), envir = envir), error = function(e) e)
     
     ## setting back global options and removing time limit
     options(opts.bak)
@@ -61,10 +61,8 @@ commands.blacklist <- function(pkg) {
     ##  * microbenchmark, logging, profiling etc.
     
     ## TODO:
-    ##  * look over if really all function is to be blacklisted
+    ##  * look over if really all functions are to be blacklisted
     ##  * free up: mget
-    
-    ## add: masked functions' methods below
     
     blacklist <- list(
         base        = c('.__H__.cbind', '.__H__.rbind', '.amatch_bounds', '.amatch_costs', '.C', '.cache_class', '.Call', '.Call.graphics', '.colMeans', '.colSums', '.decode_numeric_version', '.Defunct', '.deparseOpts', '.Deprecated', '.difftime', '.doTrace', '.dynLibs', '.encode_numeric_version', '.expand_R_libs_env_var', '.Export', '.External', '.External.graphics', '.find.package', '.First.sys', '.Fortran', '.getRequiredPackages', '.getRequiredPackages2', '.gt', '.gtn', '.handleSimpleError', '.Import', '.ImportFrom', '.Internal', '.isMethodsDispatchOn', '.isOpen', '.kronecker', '.libPaths', '.make_numeric_version', '.makeMessage', '.mergeExportMethods', '.mergeImportMethods', '.NotYetImplemented', '.NotYetUsed', '.OptRequireMethods', '.packages', '.packageStartupMessage', '.path.package', '.POSIXct', '.POSIXlt', '.Primitive', '.primTrace', '.primUntrace', '.readRDS', '.row_names_info', '.rowMeans', '.rowSums', '.S3method', '.saveRDS', '.Script', '.set_row_names', '.signalSimpleWarning', '.standard_regexps', '.subset', '.subset2', '.TAOCP1997init', 'as.call', 'asNamespace', 'asS3', 'asS4', 'attach', 'attachNamespace', 'autoload', 'autoloader', 'baseenv', 'bindingIsActive', 'bindingIsLocked', 'bindtextdomain', 'body', 'browser', 'browserCondition', 'browserSetDebug', 'browserText', 'builtins', 'bzfile', 'call', 'cat', 'chartr', 'close', 'close.connection', 'close.srcfile', 'close.srcfilealias', 'closeAllConnections', 'Cstack_info', 'debug', 'debugonce', 'deparse', 'detach', 'dget', 'dir', 'dir.create', 'do.call', 'dput', 'dump', 'dyn.load', 'dyn.unload', 'enc2native', 'enc2utf8', 'encodeString', 'Encoding', 'env.profile', 'environment', 'environmentIsLocked', 'environmentName', 'eval.parent', 'evalq', 'exists', 'fifo', 'file', 'file.access', 'file.append', 'file.choose', 'file.copy', 'file.create', 'file.exists', 'file.info', 'file.link', 'file.path', 'file.remove', 'file.rename', 'file.show', 'file.symlink', 'find.package', 'findPackageEnv', 'flush', 'flush.connection', 'force', 'formals', 'gc', 'gc.time', 'gcinfo', 'gctorture', 'gctorture2', 'getAllConnections', 'getCallingDLL', 'getCallingDLLe', 'getCConverterDescriptions', 'getCConverterStatus', 'getConnection', 'getDLLRegisteredRoutines', 'getDLLRegisteredRoutines.character', 'getDLLRegisteredRoutines.DLLInfo', 'getElement', 'geterrmessage', 'getExportedValue', 'getHook', 'getLoadedDLLs', 'getNamespace', 'getNamespaceExports', 'getNamespaceImports', 'getNamespaceInfo', 'getNamespaceName', 'getNamespaceUsers', 'getNamespaceVersion', 'getNativeSymbolInfo', 'getNumCConverters', 'getRversion', 'getSrcLines', 'getTaskCallbackNames', 'gettext', 'gettextf', 'getwd', 'globalenv', 'gzcon', 'gzfile', 'iconv', 'iconvlist', 'importIntoEnv', 'interactive', 'intToUtf8', 'invokeRestart', 'invokeRestartInteractively', 'is.call', 'is.loaded', 'isBaseNamespace', 'isdebugged', 'isIncomplete', 'isNamespace', 'isSeekable', 'l10n_info', 'lazyLoad', 'lazyLoadDBexec', 'lazyLoadDBfetch', 'library.dynam', 'library.dynam.unload', 'licence', 'license', 'list.dirs', 'list2env', 'load', 'loadedNamespaces', 'loadingNamespaceInfo', 'loadNamespace', 'lockBinding', 'lockEnvironment', 'local', 'makeActiveBinding', 'manglePackageName', 'mem.limits', 'memCompress', 'memDecompress', 'memory.profile', 'mget', 'namespaceExport', 'namespaceImport', 'namespaceImportClasses', 'namespaceImportFrom', 'namespaceImportMethods', 'new.env', 'NextMethod', 'ngettext', 'on.exit', 'open', 'open.connection', 'open.srcfile', 'open.srcfilealias', 'open.srcfilecopy', 'package_version', 'packageEvent', 'packageHasNamespace', 'packageStartupMessage', 'parent.env', 'parent.frame', 'parse', 'parseNamespaceFile', 'path.expand', 'path.package', 'pipe', 'pos.to.env', 'pushBack', 'pushBackLength', 'q', 'quit', 'R_system_version', 'R.home', 'R.Version', 'rawConnection', 'rawConnectionValue', 'read.dcf', 'readBin', 'readChar', 'readline', 'readLines', 'readRDS', 'readRenviron', 'Recall', 'registerS3method', 'registerS3methods', 'remove', 'removeCConverter', 'removeTaskCallback', 'requireNamespace', 'restartDescription', 'restartFormals', 'retracemem', 'rm', 'RNGkind', 'RNGversion', 'save', 'save.image', 'saveRDS', 'scan', 'search', 'searchpaths', 'seek', 'serialize', 'setHook', 'setNamespaceInfo', 'setSessionTimeLimit', 'setTimeLimit', 'setwd', 'showConnections', 'sink', 'sink.number', 'socketConnection', 'socketSelect', 'source', 'srcfile', 'srcfilealias', 'srcfilecopy', 'srcref', 'sys.call', 'sys.calls', 'Sys.chmod', 'Sys.Date', 'sys.frame', 'sys.frames', 'sys.function', 'Sys.getenv', 'Sys.getlocale', 'Sys.getpid', 'Sys.glob', 'Sys.info', 'sys.load.image', 'Sys.localeconv', 'sys.nframe', 'sys.on.exit', 'sys.parent', 'sys.parents', 'Sys.readlink', 'sys.save.image', 'Sys.setenv', 'Sys.setFileTime', 'Sys.setlocale', 'Sys.sleep', 'sys.source', 'sys.status', 'Sys.time', 'Sys.timezone', 'Sys.umask', 'Sys.unsetenv', 'Sys.which', 'system', 'system.file', 'system.time', 'system2', 'taskCallbackManager', 'tempdir', 'tempfile', 'testPlatformEquivalence', 'textConnection', 'textConnectionValue', 'topenv', 'trace', 'traceback', 'tracemem', 'truncate', 'truncate.connection', 'undebug', 'unloadNamespace', 'unlockBinding', 'unserialize', 'untrace', 'untracemem', 'unz', 'url', 'UseMethod', 'utf8ToInt', 'warnings', 'withCallingHandlers', 'write', 'write.dcf', 'writeBin', 'writeChar', 'writeLines', 'xzfile', 'unlink', 'list.files', 'charToRaw', 'rawToChar', 'rawShift', 'rawToBits', 'intToBits', 'packBits'),
@@ -90,7 +88,7 @@ commands.blacklist <- function(pkg) {
 #' 
 #' This function returns a special environment pre-loaded with bunch of forked functions from \code{base}, \code{stats}, \code{graphics} etc. to act as a jail for later evaluation.
 #' 
-#' Some of the forked functions \code{stop}s by default (to prevent using those inside the environment), for a full list see \code{\link{commands.blacklist}}. Other functions (ending in \code{masked}) behaves differently then usual: some parameters are forbidden (like \code{eval}'s \code{env}) to prevent breaking out from the sandbox, some parameters and returned values are checked for "malicious" signs.
+#' Some of the forked functions \code{stop}s by default (to prevent using those inside the environment), for a full list see \code{\link{commands.blacklist}}. Other functions (found in package's namespace) behaves differently then usual: some parameters are forbidden (like \code{eval}'s \code{env}) to prevent breaking out from the sandbox, some parameters and returned values are checked for "malicious" signs.
 #' @param blacklist character vector of function names which should be banned 
 #' @return environment 
 #' @export
@@ -99,11 +97,7 @@ sandbox.env <- function(blacklist = as.character(unlist(commands.blacklist()))) 
     ## prepare a custom environment with dummy functions
     sandboxed.env <- new.env()
     for (cmd in blacklist)
-        eval(parse(text = sprintf("%s <- function(x) stop('You have successfully by-passed my regexps but after all calling a still forbidden function: %s')", cmd, cmd)), envir = sandboxed.env)
-
-    ## populate environment with masked functions
-    for (cmd in ls(pattern = ".*\\.masked", envir = getNamespace("sandboxR")))
-        eval(parse(text = sprintf("%s <- sandboxR:::%s", sub('\\.masked$', '', cmd), cmd)), envir = sandboxed.env)
+        base::eval(base::parse(text = sprintf("%s <- function(x) stop('You have successfully by-passed my regexps but after all calling a still forbidden function: %s')", cmd, cmd)), envir = sandboxed.env)
 
     return(sandboxed.env)
 
@@ -148,30 +142,6 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
     calls.forbidden <- vars %in% blacklist
     if (any(calls.forbidden))
         stop(sprintf('Forbidden function%s used as symbol: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(vars[which(calls.forbidden)], collapse = ', ')))
-
-    ## TODO: eliminate all below
-    ## filtering unexposed forbidden function calls: e.g. (get)()
-    blacklist.found <- sapply(sprintf('\\(`?%s`?\\)', blacklist), function(x) any(grepl(x, src)))
-    blacklist.found <- which(blacklist.found == TRUE)
-    if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden function%s called: %s.', ifelse(length(blacklist.found) == 1, '', 's'), paste0(blacklist[blacklist.found], collapse = ', ')))
-
-    ## filtering quoted forbidden functions: e.g. "get"()
-    calls.forbidden <- gsub('"|`|\'', '', strings)  %in% blacklist
-    if (any(calls.forbidden))
-        stop(sprintf('Forbidden function%s quoted: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(strings[which(calls.forbidden)], collapse = ', ')))
-
-    ## filtering forks of forbidden functions: e.g. x <- get
-    blacklist.found <- sapply(sprintf('(<-|=)[ \t`\\(]*%s[ \t`;\\)]*$', blacklist), function(x) any(grepl(x, src)))
-    blacklist.found <- which(blacklist.found == TRUE)
-    if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden function%s attempted to fork: %s.', ifelse(length(blacklist.found) == 1, ' was', 's were'), paste0(blacklist[blacklist.found], collapse = ', ')))
-
-    ## filtering forbidden function calls in static strings: e.g. "get()"
-    blacklist.found <- sapply(sprintf('%s[ \t`\'"]*\\(', blacklist), function(x) any(grepl(x, strings)))
-    blacklist.found <- which(blacklist.found == TRUE)
-    if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden call to function%s attempted to build: %s.', ifelse(length(blacklist.found) == 1, '\'s name was', 's\' names were'), paste0(blacklist[blacklist.found], collapse = ', ')))
 
     return(invisible(TRUE))
 

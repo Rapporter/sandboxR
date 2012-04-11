@@ -1,13 +1,8 @@
 context('normal behavior (no filtering should happen)')
+
 test_that('called functions', {
             expect_output(sandbox("as.formula('1~1')"), '.*')
             expect_output(sandbox("lm(mtcars)"), '.*')
-            expect_output(sandboxR:::model.frame.masked(mtcars), '.*')
-            expect_output(sandboxR:::as.formula.masked('1~1'), '.*')
-            expect_output(sandboxR:::as.formula.masked(1~1), '.*')
-            expect_output(sandboxR:::formula.masked('1~1'), '.*')
-            expect_output(sandboxR:::formula.masked(1~1), '.*')
-            expect_output(sandboxR:::paste.masked(letters), '.*')
             expect_output(sandbox("(get)('mtcars')"), '.*')
             expect_output(sandbox("(`get`)('mtcars')"), '.*')
             expect_output(sandbox("x <- (get)"), '.*')
@@ -28,7 +23,7 @@ test_that('called functions', {
 
 test_that('paste/sprintf created functions', {
             expect_error(sandbox(c("x1 <- 's'", "x2 <- 'y'", "x3 <- 't'", "x4 <- 'e'", "x5 <- 'm'", "x <- paste(x1, x2, x1, x3, x4, x5, sep = '')", "lm(sprintf(\"%s('echo hello > /tmp/xxx') ~ 1\", x))")))
-            expect_error(sandbox('paste("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")'))
+            expect_output(sandbox('paste("as.numeric(system(\'ls -la | wc -l\', intern=T)) ~ 1")'), '.*')
         })
 
 test_that('lm hacks', {
@@ -42,6 +37,7 @@ test_that('lm hacks', {
             expect_error(sandbox("out <- paste(\"1 ~ system\", \" x\");out <- gsub(\"x\", \"('echo 1')\", out);plot(as.formula(out))"))
             expect_error(sandbox("out <- paste(\"1 ~ print(system\", \" x)\");out <- gsub(\"x\", \"('echo 1')\", out);t.test(formula = as.formula(out))"))
             expect_error(sandbox(c('out <- paste("1 ~ print(read.table", " x)");', "out <- gsub(\"x\", \"('/etc/passwd')\", out);", "lm(out)")))
+            expect_output(sandbox("lm(mtcars)"), '.*')
         })
 
 test_that('forked functions', {
@@ -67,7 +63,7 @@ test_that('functions as symbols', {
 context('defusing forkbomb')
 
 test_that('check elapsed time', {
-            expect_error(sandbox("while(TRUE) mean(1:10)", 1))
+            expect_error(sandbox("while(TRUE) mean(1:10)", time.limit = 1))
         })
 
 context('masked functions')

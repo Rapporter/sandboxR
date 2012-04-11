@@ -21,10 +21,10 @@
   Some of the forked functions \code{stop}s by default (to
   prevent using those inside the environment), for a full
   list see \code{\link{commands.blacklist}}. Other
-  functions (ending in \code{masked}) behaves differently
-  then usual: some parameters are forbidden (like
-  \code{eval}'s \code{env}) to prevent breaking out from
-  the sandbox, some parameters and returned values are
+  functions (found in package's namespace) behaves
+  differently then usual: some parameters are forbidden
+  (like \code{eval}'s \code{env}) to prevent breaking out
+  from the sandbox, some parameters and returned values are
   checked for "malicious" signs.
 }
 

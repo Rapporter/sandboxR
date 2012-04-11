@@ -1,119 +1,8 @@
-#' Masked paste
-#' 
-#' Checks for forbidden function calls in constructed character vector before returning result. 
-#' @param ... see \code{paste}
-#' @param sep see \code{paste} 
-#' @param collapse  see \code{paste}
-#' @seealso commands.blacklist
-#' @examples \dontrun{
-#' paste.masked('sys', 'tem', '(', sep = '')
-#' paste.masked('xsx sax s system( dasf asf as url(')
-#' paste.masked(c(letters[c(19, 25, 19, 20, 5, 13)], '('), collapse = "")
-#' }
-paste.masked  <- function(..., sep = '', collapse = NULL) {
-    
-    res <- base::paste(..., sep = sep, collapse = collapse)
-    
-    blacklist <- as.character(unlist(commands.blacklist()))
-    blacklist.found <- sapply(sprintf('%s[ \t]*\\(', blacklist), grepl, res)
-    blacklist.found <- which(blacklist.found == TRUE)
-    
-    if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden function%s name build: %s.', ifelse(length(blacklist.found) == 1, '\'s', 's\''), paste0(blacklist[blacklist.found], collapse = ', ')))
-    
-    return(res)
-    
-}
-
-
-#' Masked paste0
-#' @param ... see \code{paste0}
-#' @param collapse  see \code{paste0}
-#' @examples \dontrun{
-#' paste0.masked('sys', 'tem', '(')
-#' }
-paste0.masked  <- function(..., collapse = NULL) {
-    
-    sandboxR::paste.masked(..., sep = '', collapse = collapse)
-    
-}
-
-
-#' Masked sprintf
-#' @param fmt see \code{sprintf}
-#' @param ... see \code{sprintf}
-sprintf.masked  <- function(fmt, ...) {
-    
-    res <- base::sprintf(fmt, ...)
-    
-    blacklist <- as.character(unlist(commands.blacklist()))
-    blacklist.found <- sapply(sprintf('%s[ \t]*\\(', blacklist), grepl, res)
-    blacklist.found <- which(blacklist.found == TRUE)
-    
-    if (length(blacklist.found) > 0)
-        stop(sprintf('Forbidden function%s name build: %s.', ifelse(length(blacklist.found) == 1, '\'s', 's\''), paste0(blacklist[blacklist.found], collapse = ', ')))
-    
-    return(res)
-    
-}
-
-
-#' Masked model.frame
-#' @param formula see \code{model.frame}
-#' @param ... see \code{model.frame}
-model.frame.masked <- function(formula, ...) {
-    
-    if (is.character(formula))
-        sandbox(formula)
-    stats::model.frame(formula, ...)
-    
-}
-
-
-#' Masked formula
-#' @param x see \code{formula}
-#' @param ... see \code{formula}
-formula.masked <- function(x, ...) {
-    
-    if (is.character(x))
-        sandbox(x)
-    stats::formula(x, ...)
-
-}
-
-
-#' Masked as.formula
-#' @param ... see \code{as.formula}
-as.formula.masked <- function(...) {
-    
-    mc <- match.call()
-    
-    if (is.character(mc$object))
-        sandbox(x)
-    
-    mc[[1]] <- quote(as.formula)
-    eval(mc)
-    
-}
-
-
-#' Masked as.formula
-#' @param object see \code{as.formula}
-#' @param env see \code{as.formula}
-as.formula.masked <- function(object, env = parent.frame()) {
-    
-    if (is.character(object))
-        sandbox(object)
-    stats::as.formula(object, env)
-    
-}
-
-
 #' Masked eval
 #' @param expr see \code{eval}
 #' @param envir see \code{eval}
 #' @param enclos see \code{eval}
-eval.masked <- function(expr, envir, enclos) {
+eval <- function(expr, envir, enclos) {
     
     if (!missing(envir) | !missing(enclos))
         stop('Tried to leave sandboxed environment.')
@@ -129,7 +18,7 @@ eval.masked <- function(expr, envir, enclos) {
 #' @param pos see \code{get}
 #' @param envir see \code{get}
 #' @param ... see \code{get}
-get.masked <- function(x, pos, envir, ...) {
+get <- function(x, pos, envir, ...) {
 
     mc <- match.call()
     
@@ -139,9 +28,9 @@ get.masked <- function(x, pos, envir, ...) {
     e <- parent.frame()
     sandbox(mc$x, e)
     
-    mc[[1]] <- quote(get)
+    mc[[1]] <- quote(base::get)
     mc$pos <- parent.frame()
-    eval(mc)
+    base::eval(mc)
     
 }
 
@@ -150,7 +39,7 @@ get.masked <- function(x, pos, envir, ...) {
 #' @param x see \code{assign}
 #' @param value see \code{assign}
 #' @param ... see \code{assign}
-assign.masked <- function(x, value, ...) {
+assign <- function(x, value, ...) {
     
     mc <- match.call()
     
@@ -160,9 +49,9 @@ assign.masked <- function(x, value, ...) {
     e <- parent.frame()
     sandbox(deparse(substitute(value)), e)
     
-    mc[[1]] <- quote(assign)
+    mc[[1]] <- quote(base::assign)
     mc$pos <- parent.frame()
-    eval(mc)
+    base::eval(mc)
     
 }
 
@@ -170,27 +59,27 @@ assign.masked <- function(x, value, ...) {
 #' Masked ls
 #' @param ... see \code{ls}
 #' @aliases ls.masked
-objects.masked <- ls.masked <- function(...) {
+objects <- ls <- function(...) {
     
-    mc <- match.call()
+    mc <- match.call(base::ls)
     
     if (!is.null(mc$envir) | !is.null(mc$pos) | !is.null(mc$name))
         stop('Tried to leave sandboxed environment.')
     
-    mc[[1]] <- quote(ls)
+    mc[[1]] <- quote(base::ls)
     mc$pos <- parent.frame()
-    res <- eval(mc)
+    res <- base::eval(mc)
     
-    setdiff(res, c(as.character(unlist(commands.blacklist())), sub('\\.masked$', '', ls(pattern = ".*\\.masked", envir = getNamespace("sandboxR")))))
+    setdiff(res, c(as.character(unlist(commands.blacklist())), sub('\\.masked$', '', base::ls(pattern = ".*\\.masked", envir = getNamespace("sandboxR")))))
 
 }
 
 
 #' Masked library
 #' @param ... see \code{library}
-library.masked <- function(...) {
+library <- function(...) {
     
-    mc <- match.call(library)
+    mc <- match.call(base::library)
     
     if (!is.null(mc$pos) | !is.null(mc$lib.loc))
         stop('Tried to leave sandboxed environment.')
@@ -207,8 +96,8 @@ library.masked <- function(...) {
         return(names(commands.blacklist()))
     }
     
-    mc[[1]] <- quote(library)
-    res <- eval(mc)
+    mc[[1]] <- quote(base::library)
+    res <- base::eval(mc)
     
     return(invisible(res))
     
@@ -217,9 +106,9 @@ library.masked <- function(...) {
 
 #' Masked require
 #' @param ... see \code{require}
-require.masked <- function(...) {
+require <- function(...) {
     
-    mc <- match.call(require)
+    mc <- match.call(base::require)
     
     if (!is.null(mc$lib.loc))
         stop('Tried to leave sandboxed environment.')
@@ -232,9 +121,23 @@ require.masked <- function(...) {
         return(names(commands.blacklist()))
     }
     
-    mc[[1]] <- quote(require)
-    res <- eval(mc)
+    mc[[1]] <- quote(base::require)
+    res <- base::eval(mc)
     
     return(invisible(res))
     
+}
+
+
+#' Masked formula.character
+#' @param x see \code{formula.character}
+#' @param env see \code{formula.character}
+#' @param ... see \code{formula.character}
+#' @export
+formula.character <- function(x, env = parent.frame(), ...)
+{
+    sandbox(x)
+    ff <- formula(base::eval(base::parse(text = x)[[1L]]))
+    environment(ff) <- env
+    ff
 }
