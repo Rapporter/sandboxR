@@ -7,8 +7,8 @@ eval <- function(expr, envir, enclos) {
     if (!missing(envir) | !missing(enclos))
         stop('Tried to leave sandboxed environment.')
     
-    mc <- match.call()
-    sandbox(deparse(substitute(expr)))
+    e <- parent.frame()
+    sandbox(deparse(substitute(expr)), e)
         
 }
 

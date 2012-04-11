@@ -71,6 +71,7 @@ context('masked functions')
 test_that('eval', {
             expect_error(sandbox("eval(mtcars, envir = .GlobalEnv)"))
             expect_output(sandbox("eval(mtcars)"), '.*')
+            expect_output(sandbox(c("x <- paste(\"as.numeric(system('ls -la | wc -l', intern=T)) ~ 1\")", "eval(x)")), '.*')
         })
 
 test_that('assign', {
