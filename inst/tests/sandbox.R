@@ -86,6 +86,7 @@ test_that('get', {
             expect_output(sandbox(c("x<-1", "get('x')")), '.*')
             expect_error(sandbox("get('system')"))
             expect_error(sandbox("get('base::system')"))
+            expect_error(sandbox("get(paste('', 'y', 'tem', sep = 's'))('whoami')"))
         })
 
 test_that('ls', {

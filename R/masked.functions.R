@@ -26,7 +26,7 @@ get <- function(x, pos, envir, ...) {
         stop('Tried to leave sandboxed environment.')
     
     e <- parent.frame()
-    sandbox(mc$x, e)
+    sandbox(x, e)
     
     mc[[1]] <- quote(base::get)
     mc$pos <- parent.frame()
