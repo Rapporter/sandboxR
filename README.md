@@ -45,8 +45,8 @@ The blacklisted functions are checked in the passed R sources:
 
  * if they are called (e.g.: `system('cat /etc/passwd')`),
  * if those are attempted to be forked (e.g.: `foo <- system`),
- * if those could be found in any character vector to later evaluation (e.g.: `foo <- "system('cat /etc/passwd')"`),
- * if those could be found in any character vector build dynamically (e.g.: `foo <- paste("","y", "tem", sep="s")`).  
+ * if those could be found as symbol (e.g.: `(system)`),
+ * if those are called in any formula to be evaluated outside of sandbox (e.g.: `lm("system('ls')")`).  
 
 ## Apologetics
 
@@ -56,9 +56,12 @@ As being a *pre-alpha* release you would find too much restrictions in this appr
 
  * ~~get~~, mget
  * ~~assign~~
+ * ~~ls~~, ~~objects~~
+ * ~~library~~, ~~require~~
+ * ~~eval~~
  * etc.
 
-For a detailed workflow pand, please check out my [TODO file](https://github.com/daroczig/sandboxR/blob/master/TODO.md)!
+For a detailed workflow plan, please check out my [TODO file](https://github.com/daroczig/sandboxR/blob/master/TODO.md)!
 
 Also as I am not sure in this package's success, only base packages (`base`, `utils`, `methods`, `stats`, `graphics` and `grDevices`) are addressed.
 
@@ -72,7 +75,7 @@ There I would **ask you to your best at trying to hack the server**, like:
  * try to write something in the system-wide writable `/sandbox/hello` file from R,
  * or simply try to figure out the root password on the machine :)
 
-Please do send me feedback if you'd succeed or you are tired of the too sharp restrictions!
+Please do [send me feedback](https://github.com/daroczig/sandboxR/issues/new) if you'd succeed or you are tired of the too sharp restrictions!
 
 ## Frequently asked questions
 
