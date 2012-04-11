@@ -1,0 +1,5 @@
+#feedback { height: 104px; width: 104px; -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg); filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); position: fixed; top: 40%; z-index: 1000; }
+#feedback a { display: block; background: #f00; height: 15px; width: 70px; padding: 8px 16px;
+                        color: #fff; font-family: Arial, sans-serif; font-size: 17px; font-weight: bold; text-decoration: none; 
+                        border-bottom: solid 1px #333; border-left: solid 1px #333; border-right: solid 1px #fff; }
+#feedback a:hover { background: #06c; }
