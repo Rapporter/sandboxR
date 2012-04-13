@@ -1,7 +1,3 @@
-#' Masked eval
-#' @param expr see \code{eval}
-#' @param envir see \code{eval}
-#' @param enclos see \code{eval}
 eval <- function(expr, envir, enclos) {
     
     if (!missing(envir) | !missing(enclos))
@@ -13,11 +9,6 @@ eval <- function(expr, envir, enclos) {
 }
 
 
-#' Masked get
-#' @param x see \code{get}
-#' @param pos see \code{get}
-#' @param envir see \code{get}
-#' @param ... see \code{get}
 get <- function(x, pos, envir, ...) {
 
     mc <- match.call()
@@ -35,10 +26,6 @@ get <- function(x, pos, envir, ...) {
 }
 
 
-#' Masked assign
-#' @param x see \code{assign}
-#' @param value see \code{assign}
-#' @param ... see \code{assign}
 assign <- function(x, value, ...) {
     
     mc <- match.call()
@@ -56,9 +43,6 @@ assign <- function(x, value, ...) {
 }
 
 
-#' Masked ls
-#' @param ... see \code{ls}
-#' @aliases ls.masked
 objects <- ls <- function(...) {
     
     mc <- match.call(base::ls)
@@ -75,8 +59,6 @@ objects <- ls <- function(...) {
 }
 
 
-#' Masked library
-#' @param ... see \code{library}
 library <- function(...) {
     
     mc <- match.call(base::library)
@@ -104,8 +86,6 @@ library <- function(...) {
 }
 
 
-#' Masked require
-#' @param ... see \code{require}
 require <- function(...) {
     
     mc <- match.call(base::require)
@@ -129,11 +109,6 @@ require <- function(...) {
 }
 
 
-#' Masked formula.character
-#' @param x see \code{formula.character}
-#' @param env see \code{formula.character}
-#' @param ... see \code{formula.character}
-#' @export
 formula.character <- function(x, env = parent.frame(), ...)
 {
     sandbox(x)

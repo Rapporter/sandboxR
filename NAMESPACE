@@ -1,5 +1,4 @@
 export(commands.blacklist)
-export(formula.character)
 export(sandbox)
 export(sandbox.env)
 export(sandbox.pretest)
