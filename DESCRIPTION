@@ -18,4 +18,4 @@ Collate:
     'masked.functions.R'
     'sandbox.R'
     'sandboxR.R'
-    'init.R'
+    'blacklist.R'
