@@ -1,9 +1,13 @@
 # Major tasks
 
  * ~~Redesign sandboxR to run in an environment with dummy forbidden functions loaded.~~
- * _Tidy up unnecessary regexps and checks from `sandbox` thanks to the above!_
+ * ~~Tidy up unnecessary regexps and checks from `sandbox` thanks to the above!~~
 
-# Allow and create masked functions for the followings
+# Check up at least twice!
+
+ * masked fn of `latticeParseFormula` is really needed? sandboxR environment seems to handle malicious calls hidden inside without updating that in `lattice` namespace
+
+# Allow (and create) masked functions for the followings
 
 ## Base
 
@@ -11,9 +15,9 @@
  * ~~assign~~
  * ~~ls~~
  * attach, detach (_wontfix_)
- * chartr (_can be done even now by removing masked `paste`, `sprintf` etc._), rawToChar (etc.)
  * parse, deparse
  * ~~eval~~
+ * do.call (safe.call from ggplot2) etc.
  * exists
  * is.call, as.call, call
  * ~~library, require~~
@@ -42,15 +46,14 @@ All functions to be revised (nothing permitted ATM).
 
 # Further packages to permit (backlist)
 
- * grid
- * lattice
+ * ~~grid~~
+ * ~~lattice~~
  * parralel (_wontfix_ for RApache environment ATM)
  * reshape, reshape2, plyr
- * ggplot2
+ * ~~ggplot2~~
  * wordcloud, treemap, scatterplot3d etc.
- * nortest
- * outliers
- * descr
- * rapport 
+ * ~~nortest~~
+ * ~~outliers~~
+ * ~~descr~~
+ * ~~rapport~~
  * ...
- 

@@ -84,13 +84,25 @@ test_that('ls', {
 
 test_that('library/require', {
     expect_output(sandbox('library()'), '.*')
-    expect_output(sandbox('library(base)'), '.*')
-    expect_output(sandbox('library(base, verbose = TRUE)'), '.*')
-    expect_output(sandbox('library("base")'), '.*')
+    expect_output(sandbox('library(stats)'), '.*')
+    expect_output(sandbox('suppressWarnings(library(stats, verbose = TRUE))'), '.*')
+    expect_output(sandbox('library("stats")'), '.*')
     expect_error(sandbox('library(RCurl)'))
     expect_error(sandbox('library("RCurl")'))
     expect_output(sandbox('require(stats)'), '.*')
     expect_error(sandbox('require(RCurl)'))
+})
+
+context('options')
+
+test_that('allowed options', {
+    expect_output(sandbox('options(test=10)'), '.*')
+    expect_output(sandbox('getOption("test")'), '10')
+})
+
+test_that('allowed options', {
+    expect_error(sandbox('options(sandboxR.disabled.options=10)'), '.*')
+    expect_error(sandbox('getOption("sandboxR.disabled.options")'))
 })
 
 context('modified internals')
@@ -111,5 +123,5 @@ test_that('lm hacks', {
 
 
 test_that('latticeParseFormula', {
-    expect_error(sandbox(c('x <- c(\'1\', \'readLines("/etc/passwd")\'', "class(x) <- 'formula'", "latticeParseFormula(data=mtcars, model=hp~wt, groups=x)")))
+    expect_error(sandbox(c('x <- c(\'1\', \'readLines("/etc/passwd")\')', "class(x) <- 'formula'", "latticeParseFormula(data=mtcars, model=hp~wt, groups=x)")))
 })

@@ -19,3 +19,4 @@ Collate:
     'sandbox.R'
     'sandboxR.R'
     'blacklist.R'
+    'init.R'

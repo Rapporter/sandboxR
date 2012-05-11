@@ -117,3 +117,51 @@ formula.character <- function(x, env = parent.frame(), ...)
 
 latticeParseFormula <- lattice:::latticeParseFormula
 body(latticeParseFormula) <- as.call(c(as.symbol("{"), c(substitute(if (inherits(groups, "formula")) sandbox.pretest(as.character(groups)[2])), as.list(body(latticeParseFormula))[-1])))
+
+
+rapport <- function(...) {
+
+    mc <- match.call(rapport::rapport)
+
+    if (!is.null(mc$reproducible) | !is.null(mc$env) | !is.null(mc$header.levels.offset) | !is.null(mc$rapport.mode) | !is.null(mc$graph.output) | !is.null(mc$file.name) | !is.null(mc$file.path) | !is.null(mc$graph.replay) | !is.null(mc$graph.hi.res))
+        stop('Forbidden parameters provided!')
+
+    mc[[1]] <- quote(rapport::rapport)
+    res <- base::eval(mc)
+
+    return(invisible(res))
+
+}
+
+
+options <- function(...) {
+
+    l <- names(list(...))
+
+    disabled.options <- base::getOption('sandboxR.disabled.options')
+
+    if (length(l) == 0) {
+        o <- base::options()
+        return(o[setdiff(names(o), disabled.options)])
+    }
+
+    if (any(l %in% disabled.options))
+        stop('Not available option(s) queried.')
+
+    mc <- match.call()
+    mc[[1]] <- quote(base::options)
+    res <- base::eval(mc)
+
+    return(invisible(res))
+
+}
+
+
+getOption <- function(x, default = NULL) {
+
+    if (x %in% base::getOption('sandboxR.disabled.options'))
+        stop('Not available option(s) queried.')
+
+    return(base::getOption(x, default))
+
+}

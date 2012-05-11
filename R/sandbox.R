@@ -8,6 +8,8 @@
 #' @export
 sandbox.env <- function(blacklist = as.character(unlist(commands.blacklist()))) {
 
+    ## TODO: check if sandboxed env was created before and return that instead of regenerating
+
     ## prepare a custom environment with dummy functions
     sandboxed.env <- new.env()
     for (cmd in blacklist) {
