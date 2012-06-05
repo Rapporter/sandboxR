@@ -126,9 +126,7 @@ rapport <- function(...) {
     if (!is.null(mc$reproducible) | !is.null(mc$env) | !is.null(mc$header.levels.offset) | !is.null(mc$rapport.mode) | !is.null(mc$graph.output) | !is.null(mc$file.name) | !is.null(mc$file.path) | !is.null(mc$graph.replay) | !is.null(mc$graph.hi.res))
         stop('Forbidden parameters provided!')
 
-    mc[[1]] <- quote(rapport::rapport)
-    res <- base::eval(mc)
-
+    res      <- do.call(rapport::rapport, list(...))
     return(invisible(res))
 
 }
