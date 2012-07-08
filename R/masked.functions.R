@@ -159,7 +159,8 @@ options <- function(...) {
 
     mc <- match.call(base::options)
     mc[[1]] <- quote(base::options)
-    res <- base::eval(mc)
+    mc[[2]] <- sandbox(deparse(mc[[2]]), parent.frame())
+    res <- base::eval(mc, parent.frame())
 
     return(invisible(res))
 
