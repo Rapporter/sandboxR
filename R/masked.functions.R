@@ -134,19 +134,30 @@ rapport <- function(...) {
 
 options <- function(...) {
 
-    l <- names(list(...))
+    l <- list(...)
 
     disabled.options <- base::getOption('sandboxR.disabled.options')
 
     if (length(l) == 0) {
+
         o <- base::options()
         return(o[setdiff(names(o), disabled.options)])
+
     }
 
-    if (any(l %in% disabled.options))
+    if (length(names(l)) == 0) {
+
+        l <- unlist(l)
+        if (any(l %in% disabled.options))
+            stop('Not available option(s) queried.')
+        return(base::getOption(l))
+
+    }
+
+    if (any(names(l) %in% disabled.options))
         stop('Not available option(s) queried.')
 
-    mc <- match.call()
+    mc <- match.call(base::options)
     mc[[1]] <- quote(base::options)
     res <- base::eval(mc)
 
