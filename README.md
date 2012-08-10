@@ -98,3 +98,5 @@ I would like to express my gratitude towards:
  * especially Hadley Wickham (@hadley) again for his inspiring comments on twitter
  * my wife and the smartest little guy in the world (@Botond) for their tolerance and support
  * and for a handful flu which got me some "spare" time to implement this
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/1fc9318f3ae80a43bb9b96ef96137acf "githalytics.com")](http://githalytics.com/Rapporter/sandboxR)
