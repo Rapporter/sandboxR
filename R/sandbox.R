@@ -44,7 +44,7 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
     src.r <- suppressWarnings(tryCatch(parser(f), error = function(e) NULL))
     close(f)
     if (is.null(nrow(attr(src.r, 'data'))))
-        stop('Syntax error.')
+        stop(paste0('Parsing command (`', src, '`) failed, possible syntax error.'))
     p       <- attr(src.r, 'data')
     calls   <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_FUNCTION_CALL')]))
     strings <- sort(unique(p$text[which(p$token.desc == 'STR_CONST')]))
