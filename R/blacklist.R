@@ -38,7 +38,7 @@ commands.blacklist <- function(pkg) {
                       outliers = NULL,
                       ggplot2  = c('ggsave', 'safe.call'),
                       rapport  = c('get.tags', 'grab.chunks', 'has.tags', 'purge.comments', 'rapport.html', 'rapport.odt', 'redraw.recordedplot', 'tpl.check', 'tpl.example', 'tpl.export', 'tpl.info', 'tpl.inputs', 'tpl.list', 'tpl.meta', 'tpl.paths', 'tpl.paths.add', 'tpl.paths.remove', 'tpl.paths.reset', 'tpl.rerun', 'tpl.tangle'),
-                      pander   = c('evals', 'eval.msgs', 'openFileInOS', 'Pandoc', 'Pandoc.brew', 'Pandoc.convert'))
+                      pander   = c('evals', 'eval.msgs', 'openFileInOS', 'Pandoc', 'Pandoc.convert'))
 
     if (missing(pkg))
         pkg <- names(blacklist)

@@ -195,3 +195,14 @@ panderOptions <- function(o, value) {
     else
         pander::panderOptions(o, value)
 }
+
+
+Pandoc.brew <- function(...) {
+
+    mc <- match.call(pander::Pandoc.brew)
+    if (!is.null(mc$file) | !is.null(mc$envir))
+        stop('Forbidden arguments passed.')
+    mc[[1]] <- quote(pander::Pandoc.brew)
+    base::eval(mc, parent.frame())
+
+}

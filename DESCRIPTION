@@ -14,6 +14,8 @@ BugReports: https://github.com/daroczig/sandboxR/issues
 License: AGPL-3
 Imports:
     parser
+Suggests:
+    pander
 Collate:
     'masked.functions.R'
     'sandbox.R'
