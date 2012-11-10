@@ -4,11 +4,13 @@
 
 This **POC** [R](http://www.r-project.org/) package tries to filter "malicious" calls in R expressions based on a blacklist to let shared R instances **be safe from file and system calls**.
 
-*If you are not the kind of person who likes to read much in the morning about a $n+1^{th}$ R package's theory and background, then please strike out for [testdriving the package in a browser](http://sandboxr.no-ip.org/) and **try to hack my system** with some guidance (see below)!*
+*If you are not the kind of person who likes to read much in the morning about a $(n+1)^{th}$ R package's theory and background, then please strike out for [testdriving the package in a browser](http://hackme.rapporter.net/) and **try to hack my system** with some guidance (see below)!*
 
 Please note that I am aware of [Apparmor](http://wiki.apparmor.net/index.php/Main_Page), [SELinux](http://selinuxproject.org/page/Main_Page), [Tomoyo Linux](http://tomoyo.sourceforge.jp/index.html.en) and other Mandatory Access Control based filters **and** this package does not intend to be used instead of those implementations!
 
-But there are some situations when a MAC based, kernel-level (mostly path based) filter cannot secure a system from a point of view. Just think of logs and other commonly writable files, not to mention the executable/memory mappable libraries. For example you might create a web application with the really great tool of @Jeff ([RApache](http://rapache.net/)) or @Jeroen's similarly handy [Opencpu](http://opencpu.org/) and would leave the `tempdir` system-wide writable to store generated images, uploaded files etc.
+BTW you should really checkout @jeroenooms's [RAppArmor](https://github.com/jeroenooms/RAppArmor) package to fine-tune your Apparmor rules even inside a function. A POC example of that latter can be found in [`pander`'s `RAppArmor` branch](https://github.com/Rapporter/pander/tree/RAppArmor).
+
+But there are some situations when a MAC based, kernel-level (mostly path based) filter cannot secure a system from a point of view. Just think of logs and other commonly writable files, not to mention the executable/memory mappable libraries. For example you might create a web application with the really great tool of @Jeff ([RApache](http://rapache.net/)) or @Jeroen's similarly handy [Opencpu](http://opencpu.org/) and would leave the `tempdir` system-wide writable to store generated images, uploaded files etc. Or you just want to forbid your users updating `options` or using some `RCurl` calls.
 
 ### Questions, motivations behind this package
 
@@ -16,7 +18,7 @@ Is it a good practice to set some MAC based filter not to allow users to reach o
 
 Are you sure some executable files in `lib` would not harm your system somehow?
 
-How do you know what kind of diabolic actions could happen to your server by installing some random package from Github with the help of `devtools` by some of your users? Of course MAC filter would stop all (most) of the tries, but just imagine if someone would package some nice root exploit :)
+How do you know what kind of diabolic actions could happen to your server by installing some random package from Github with the help of `devtools` by some of your users? Of course MAC filter would stop all(most) of the tries, but just imagine if someone would package some nice root exploit :)
 
 Well, this latter is rather sci-fi, but the above questions do stand in some situations. This package is and idea for those, who are interested in such environments.
 
@@ -67,7 +69,7 @@ Also as I am not sure in this package's success, only base packages (`base`, `ut
 
 ## Testdrive!
 
-Anyway, please feel free to **try** *and* **test** a [live (simple) web application which was build to test *sandboxR*](http://sandboxr.no-ip.org/)!
+Anyway, please feel free to **try** *and* **test** a [live (simple) web application which was build to test *sandboxR*](http://hackme.rapporter.net/)!
 
 There I would **ask you to your best at trying to hack the server**, like:
 
@@ -75,11 +77,11 @@ There I would **ask you to your best at trying to hack the server**, like:
  * try to write something in the system-wide writable `/sandbox/hello` file from R,
  * or simply try to figure out the root password on the machine :)
 
-Please do [send me feedback](https://github.com/daroczig/sandboxR/issues/new) if you'd succeed or you are tired of the too sharp restrictions!
+Please do [send me feedback](https://github.com/rapporter/sandboxR/issues/new) if you'd succeed or you are tired of the too sharp restrictions!
 
 ## Frequently asked questions
 
-Please see in dedicated file ([FAQ.md](https://github.com/daroczig/sandboxR/blob/master/FAQ.md)).
+Please see in dedicated file ([FAQ.md](https://github.com/rapporter/sandboxR/blob/master/FAQ.md)).
 
 ## License
 
