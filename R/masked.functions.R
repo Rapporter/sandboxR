@@ -175,3 +175,23 @@ getOption <- function(x, default = NULL) {
     return(base::getOption(x, default))
 
 }
+
+
+evalsOptions <- function(o, value) {
+    if (!o %in% c('graph.unify', 'width', 'height'))
+        stop('Forbidden parameter queried. You can set: `graph.unify`, `width`, `height` only.')
+    if (missing(value))
+        pander::evalsOptions(o)
+    else
+        pander::evalsOptions(o, value)
+}
+
+
+panderOptions <- function(o, value) {
+    if (o %in% c('table.style'))
+        stop('Forbidden parameter queried.')
+    if (missing(value))
+        pander::panderOptions(o)
+    else
+        pander::panderOptions(o, value)
+}
