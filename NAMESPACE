@@ -1,5 +1,5 @@
 export(commands.blacklist)
-export(sandbox)
 export(sandbox.env)
 export(sandbox.pretest)
+export(sandbox)
 importFrom(parser,parser)
