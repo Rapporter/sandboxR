@@ -206,3 +206,14 @@ Pandoc.brew <- function(...) {
     base::eval(mc, parent.frame())
 
 }
+
+
+capture.output <- function(...) {
+
+    mc <- match.call(utils::capture.output)
+    if (!is.null(mc$file))
+        stop('Forbidden arguments passed.')
+    mc[[1]] <- quote(utils::capture.output)
+    base::eval(mc, parent.frame())
+
+}
