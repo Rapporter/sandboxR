@@ -40,10 +40,13 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
         stop('Nothing provided to check.')
 
     ## parse elements of src
-    src.r <- suppressWarnings(tryCatch(parse(text = src), error = function(e) NULL))
+    src.r <- suppressWarnings(tryCatch(parse(text = src), error = function(e) e))
 
-    if (is.null(nrow(attr(src.r, 'data'))))
-        stop(paste0('Parsing command (`', src, '`) failed, possible syntax error.'))
+    ## syntax error
+    if (inherits(src.r, 'error'))
+        stop(paste0('Parsing command (`', src, '`) failed, possible syntax error: `', paste(src.r$message, collapse = ';') ,'`'))
+
+    ## get details on the parts of src
     p       <- getParseData(src.r)
     calls   <- sort(unique(p$text[which(p$token == 'SYMBOL_FUNCTION_CALL')]))
     strings <- sort(unique(p$text[which(p$token == 'STR_CONST')]))
