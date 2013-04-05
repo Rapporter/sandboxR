@@ -40,16 +40,15 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
         stop('Nothing provided to check.')
 
     ## parse elements of src
-    f <- textConnection(src)
-    src.r <- suppressWarnings(tryCatch(parser(f), error = function(e) NULL))
-    close(f)
+    src.r <- suppressWarnings(tryCatch(parse(text = src), error = function(e) NULL))
+
     if (is.null(nrow(attr(src.r, 'data'))))
         stop(paste0('Parsing command (`', src, '`) failed, possible syntax error.'))
-    p       <- attr(src.r, 'data')
-    calls   <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_FUNCTION_CALL')]))
-    strings <- sort(unique(p$text[which(p$token.desc == 'STR_CONST')]))
-    vars    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL')]))
-    pkgs    <- sort(unique(p$text[which(p$token.desc == 'SYMBOL_PACKAGE')]))
+    p       <- getParseData(src.r)
+    calls   <- sort(unique(p$text[which(p$token == 'SYMBOL_FUNCTION_CALL')]))
+    strings <- sort(unique(p$text[which(p$token == 'STR_CONST')]))
+    vars    <- sort(unique(p$text[which(p$token == 'SYMBOL')]))
+    pkgs    <- sort(unique(p$text[which(p$token == 'SYMBOL_PACKAGE')]))
 
     ## filtering foreign calls
     if (length(pkgs) > 0)

@@ -12,8 +12,8 @@ Date: 2012-04-02
 URL: https://github.com/daroczig/sandboxR
 BugReports: https://github.com/daroczig/sandboxR/issues
 License: AGPL-3
-Imports:
-    parser
+Depends:
+    R (>= 3.0.0)
 Suggests:
     pander
 Collate:
