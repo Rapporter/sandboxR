@@ -100,8 +100,16 @@ sandbox <- function(src, envir, time.limit = 10) {
     ## check elapsed time
     setTimeLimit(elapsed = time.limit)
 
+    ## parse expressions
+    p <- base::parse(text = src)
+    lapply(p, function(c) {
+        l <- match.call(base::get(as.character(c[[1]])), c)
+        if (any(names(l) == 'envir'))
+            stop(sprintf('Tried to leave sandboxed enviroment with the "envir" argument of "%s".', as.character(l[[1]])))
+    })
+
     ## evaluate
-    res <- tryCatch(base::eval(base::parse(text = src), envir = envir), error = function(e) e)
+    res <- tryCatch(base::eval(p, envir = envir), error = function(e) e)
 
     ## setting back global options and removing time limit
     options(opts.bak)
