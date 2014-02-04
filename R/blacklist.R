@@ -39,7 +39,8 @@ commands.blacklist <- function(pkg) {
                       ggplot2  = c('ggsave', 'safe.call'),
                       rapport  = c('get.tags', 'grab.chunks', 'has.tags', 'purge.comments', 'rapport.html', 'rapport.odt', 'redraw.recordedplot', 'tpl.check', 'tpl.example', 'tpl.export', 'tpl.info', 'tpl.inputs', 'tpl.list', 'tpl.meta', 'tpl.paths', 'tpl.paths.add', 'tpl.paths.remove', 'tpl.paths.reset', 'tpl.rerun', 'tpl.tangle'),
                       pander   = c('evals', 'eval.msgs', 'openFileInOS', 'Pandoc', 'Pandoc.convert'),
-                      RAppArmor= c('aa_change_hat', 'aa_change_profile', 'aa_find_mountpoint', 'aa_getcon', 'aa_is_enabled', 'aa_is_enabled', 'rlimit_as', 'rlimit_core', 'rlimit_cpu', 'rlimit_data', 'rlimit_fsize', 'rlimit_mlock', 'rlimit_msgqueue', 'rlimit_nice', 'rlimit_nofile', 'rlimit_nproc', 'rlimit_rtprio', 'rlimit_rttime', 'rlimit_sigpending', 'rlimit_stack', 'getaffinity', 'getaffinity_count', 'getpriority', 'getgid', 'getuid', 'eval.secure', 'kill', 'ncores', 'setaffinity', 'setgid', 'setpriority', 'setuid', 'unittests', 'userinfo'))
+                      RAppArmor= c('aa_change_hat', 'aa_change_profile', 'aa_find_mountpoint', 'aa_getcon', 'aa_is_enabled', 'aa_is_enabled', 'rlimit_as', 'rlimit_core', 'rlimit_cpu', 'rlimit_data', 'rlimit_fsize', 'rlimit_mlock', 'rlimit_msgqueue', 'rlimit_nice', 'rlimit_nofile', 'rlimit_nproc', 'rlimit_rtprio', 'rlimit_rttime', 'rlimit_sigpending', 'rlimit_stack', 'getaffinity', 'getaffinity_count', 'getpriority', 'getgid', 'getuid', 'eval.secure', 'kill', 'ncores', 'setaffinity', 'setgid', 'setpriority', 'setuid', 'unittests', 'userinfo'),
+                      parser   = 'parser', 'count.chars')
 
     if (missing(pkg))
         pkg <- names(blacklist)
