@@ -68,6 +68,43 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
     if (any(calls.forbidden))
         stop(sprintf('Forbidden function%s used as symbol: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(vars[which(calls.forbidden)], collapse = ', ')))
 
+    ## parse for quoted fns
+    p <- base::parse(text = src)
+    lapply(p, function(c) {
+
+        d <- deparse(c)
+        t <- textConnection(d)
+        s <- suppressWarnings(tryCatch(parser(t), error = function(e) NULL))
+        close(t)
+        if (is.null(nrow(attr(s, 'data'))))
+            stop(paste0('Parsing command (`', d, '`) failed, possible syntax error.'))
+        l <- attr(s, 'data')
+        f <- which(l$token.desc == 'SYMBOL_FUNCTION_CALL')
+        calls <- l$text[f]
+
+        if (length(f) > 0) {
+
+            ## filtering forbidden function calls:
+            calls.forbidden <- calls %in% blacklist
+            if (any(calls.forbidden))
+                stop(sprintf('Forbidden function%s called: %s.', ifelse(sum(calls.forbidden) == 1, '', 's'), paste0(calls[which(calls.forbidden)], collapse = ', ')))
+
+            ## extract all sub-fn calls
+            se <- data.frame(start = which(l$id %in% l$id[f]), end = sapply(l$parent[f+1], function(x) which(x == l$id)))
+            fs <- sapply(apply(se, 1, function(x) l$text[x[1]:x[2]]), paste, collapse = '')
+
+            ## check all fn calls for envir argument
+            lapply(fs, function(S) {
+                c <- base::parse(text = S)
+                l <- match.call(base::get(as.character(c[[1]])), c)
+                if (any(names(l) == 'envir'))
+                    stop(sprintf('Tried to leave sandboxed enviroment with the "envir" argument of "%s".', as.character(l[[1]])))
+            })
+
+        }
+
+    })
+
     return(invisible(TRUE))
 
 }
@@ -102,11 +139,6 @@ sandbox <- function(src, envir, time.limit = 10) {
 
     ## parse expressions
     p <- base::parse(text = src)
-    lapply(p, function(c) {
-        l <- match.call(base::get(as.character(c[[1]])), c)
-        if (any(names(l) == 'envir'))
-            stop(sprintf('Tried to leave sandboxed enviroment with the "envir" argument of "%s".', as.character(l[[1]])))
-    })
 
     ## evaluate
     res <- tryCatch(base::eval(p, envir = envir), error = function(e) e)
