@@ -53,7 +53,7 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
 
     ## filtering foreign calls
     if (length(pkgs) > 0)
-        stop(sprintf('Tried to call at least one function outside of active namespace from package%s: %s', ifelse(length(pkgs) == 1, '', 's'), paste0(pkgs, collapse = ', ')))
+        stop(sprintf('Tried to call at least one function outside of the active namespace from package%s: %s', ifelse(length(pkgs) == 1, '', 's'), paste0(pkgs, collapse = ', ')))
 
     ## filtering forbidden function calls: e.g. get()
     calls.forbidden <- calls %in% blacklist
