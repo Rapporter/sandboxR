@@ -91,7 +91,10 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
 
             ## extract all sub-fn calls
             se <- data.frame(start = which(l$id %in% l$id[f]), end = sapply(l$parent[f+1], function(x) which(x == l$id)))
-            fs <- sapply(apply(se, 1, function(x) l$text[x[1]:x[2]]), paste, collapse = '')
+            if (nrow(se) > 1)
+                fs <- sapply(apply(se, 1, function(x) l$text[x[1]:x[2]]), paste, collapse = '')
+            else
+                fs <- d
 
             ## check all fn calls for envir argument
             lapply(fs, function(S) {
