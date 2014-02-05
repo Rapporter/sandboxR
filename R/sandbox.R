@@ -31,9 +31,10 @@ sandbox.env <- function(blacklist = as.character(unlist(commands.blacklist()))) 
 #' This function tests a character vector of R commands agains a list of banned functions and \code{stop}s if any found.
 #' @param src character vector of R commands
 #' @param blacklist character vector of function names which should be banned
+#' @param envir environment
 #' @return invisibly \code{TRUE} if tests passed
 #' @export
-sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blacklist()))) {
+sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blacklist())), envir = parent.frame()) {
 
     ## dummy checks
     if (missing(src))
@@ -99,7 +100,7 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
             ## check all fn calls for envir argument
             lapply(fs, function(S) {
                 c <- base::parse(text = S)
-                l <- match.call(base::get(as.character(c[[1]])), c)
+                l <- match.call(base::get(as.character(c[[1]]), envir = envir), c)
                 if (any(names(l) == 'envir'))
                     stop(sprintf('Tried to leave sandboxed enviroment with the "envir" argument of "%s".', as.character(l[[1]])))
             })
@@ -134,25 +135,27 @@ sandbox <- function(src, envir, time.limit = 10) {
     ## saving global options
     opts.bak <- options()
 
-    ## pre-checking source for malicious code
-    sandbox.pretest(src)
-
     ## check elapsed time
     setTimeLimit(elapsed = time.limit)
 
     ## parse expressions
     p <- base::parse(text = src)
 
-    ## evaluate
-    res <- tryCatch(base::eval(p, envir = envir), error = function(e) e)
+    ## evaluate per expression and check
+    res <- lapply(p, function(x) {
+
+        sandbox.pretest(deparse(x), envir = envir)
+        res <- tryCatch(base::eval(x, envir = envir), error = function(e) e)
+
+        if (any(class(res) == 'error'))
+            stop(res[[1]])
+
+    })
 
     ## setting back global options and removing time limit
     options(opts.bak)
     setTimeLimit(elapsed = Inf)
 
-    ## return
-    if (any(class(res) == 'error'))
-        stop(res[[1]])
     return(res)
 
 }
