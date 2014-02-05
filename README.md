@@ -96,7 +96,7 @@ I would like to express my gratitude towards:
  * Aleksandar Blagotić (@aL3xa) for working together
  * Jeroen Ooms (@jeroenooms) for security related discussions, for his hints and for his unbelief :)
  * [@DWin and Hadley Wickham (@hadley)](http://stackoverflow.com/questions/8379570/get-functions-title-from-documentation) for teaching me how to parse helpfiles
- * all those who tried (and succeeded) to by-pass `sandboxR`'s security checks
+ * all those who tried (and succeeded) to by-pass `sandboxR`'s security checks (Jeroen Ooms, Joshua Ulrich, nils, zetien)
  * especially Hadley Wickham (@hadley) again for his inspiring comments on twitter
  * my wife and the smartest little guy in the world (@Botond) for their tolerance and support
  * and for a handful flu which got me some "spare" time to implement this
