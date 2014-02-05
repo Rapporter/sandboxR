@@ -150,6 +150,8 @@ sandbox <- function(src, envir, time.limit = 10) {
         if (any(class(res) == 'error'))
             stop(res[[1]])
 
+        return(res)
+
     })
 
     ## setting back global options and removing time limit
