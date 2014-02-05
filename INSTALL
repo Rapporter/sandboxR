@@ -4,7 +4,7 @@ Securing system
 
 To use all power of sandboxR and to really secure your environment, please run the following commands
 
- * assignInNamespace('formula.character', sandboxR:::formula.character.masked, ns = 'stats')
+ * assignInNamespace('formula.character', sandboxR:::formula.character, ns = 'stats')
  * assignInNamespace('latticeParseFormula', sandboxR:::latticeParseFormula, ns = 'lattice')
 
 WARNING: These calls are updating some _base_ (internal) functions and might have some unwanted side-effects!
