@@ -95,7 +95,7 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
             if (nrow(se) > 1)
                 fs <- sapply(apply(se, 1, function(x) l$text[x[1]:x[2]]), paste, collapse = '')
             else
-                fs <- d
+                fs <- paste(l$text[se[1, 1]:se[1, 2]], collapse = '')
 
             ## check all fn calls for envir argument
             lapply(fs, function(S) {
