@@ -31,9 +31,10 @@ sandbox.env <- function(blacklist = as.character(unlist(commands.blacklist()))) 
 #' This function tests a character vector of R commands agains a list of banned functions and \code{stop}s if any found.
 #' @param src character vector of R commands
 #' @param blacklist character vector of function names which should be banned
+#' @param envir environment
 #' @return invisibly \code{TRUE} if tests passed
 #' @export
-sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blacklist()))) {
+sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blacklist())), envir = parent.frame()) {
 
     ## dummy checks
     if (missing(src))
@@ -55,7 +56,10 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
 
     ## filtering foreign calls
     if (length(pkgs) > 0)
-        stop(sprintf('Tried to call at least one function outside of active namespace from package%s: %s', ifelse(length(pkgs) == 1, '', 's'), paste0(pkgs, collapse = ', ')))
+        stop(sprintf('Tried to call at least one function outside of the active namespace from package%s: %s', ifelse(length(pkgs) == 1, '', 's'), paste0(pkgs, collapse = ', ')))
+    NS <- which(p$token.desc == 'NS_GET')
+    if (length(NS) > 0)
+        stop(sprintf('Tried to call at least one function outside of the active namespace, probably from package%s: %s', ifelse(length(NS) == 1, '', 's'), paste0(p$text[NS - 1], collapse = ', ')))
 
     ## filtering forbidden function calls: e.g. get()
     calls.forbidden <- calls %in% blacklist
@@ -66,6 +70,46 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
     calls.forbidden <- vars %in% blacklist
     if (any(calls.forbidden))
         stop(sprintf('Forbidden function%s used as symbol: %s.', ifelse(length(calls.forbidden) == 1, '', 's'), paste0(vars[which(calls.forbidden)], collapse = ', ')))
+
+    ## parse for quoted fns
+    p <- base::parse(text = src)
+    lapply(p, function(c) {
+
+        d <- deparse(c)
+        t <- textConnection(d)
+        s <- suppressWarnings(tryCatch(parser(t), error = function(e) NULL))
+        close(t)
+        if (is.null(nrow(attr(s, 'data'))))
+            stop(paste0('Parsing command (`', d, '`) failed, possible syntax error.'))
+        l <- attr(s, 'data')
+        f <- which(l$token.desc == 'SYMBOL_FUNCTION_CALL')
+        calls <- l$text[f]
+
+        if (length(f) > 0) {
+
+            ## filtering forbidden function calls:
+            calls.forbidden <- calls %in% blacklist
+            if (any(calls.forbidden))
+                stop(sprintf('Forbidden function%s called: %s.', ifelse(sum(calls.forbidden) == 1, '', 's'), paste0(calls[which(calls.forbidden)], collapse = ', ')))
+
+            ## extract all sub-fn calls
+            se <- data.frame(start = which(l$id %in% l$id[f]), end = sapply(l$parent[f+1], function(x) which(x == l$id)))
+            if (nrow(se) > 1)
+                fs <- sapply(apply(se, 1, function(x) l$text[x[1]:x[2]]), paste, collapse = '')
+            else
+                fs <- paste(l$text[se[1, 1]:se[1, 2]], collapse = '')
+
+            ## check all fn calls for envir argument
+            lapply(fs, function(S) {
+                c <- base::parse(text = S)
+                l <- match.call(base::get(as.character(c[[1]]), envir = envir), c)
+                if (any(names(l) == 'envir'))
+                    stop(sprintf('Tried to leave sandboxed enviroment with the "envir" argument of "%s".', as.character(l[[1]])))
+            })
+
+        }
+
+    })
 
     return(invisible(TRUE))
 
@@ -93,22 +137,29 @@ sandbox <- function(src, envir, time.limit = 10) {
     ## saving global options
     opts.bak <- options()
 
-    ## pre-checking source for malicious code
-    sandbox.pretest(src)
-
     ## check elapsed time
     setTimeLimit(elapsed = time.limit)
 
-    ## evaluate
-    res <- tryCatch(base::eval(base::parse(text = src), envir = envir), error = function(e) e)
+    ## parse expressions
+    p <- base::parse(text = src)
+
+    ## evaluate per expression and check
+    res <- lapply(p, function(x) {
+
+        sandbox.pretest(deparse(x), envir = envir)
+        res <- tryCatch(base::eval(x, envir = envir), error = function(e) e)
+
+        if (any(class(res) == 'error'))
+            stop(res[[1]])
+
+        return(res)
+
+    })
 
     ## setting back global options and removing time limit
     options(opts.bak)
     setTimeLimit(elapsed = Inf)
 
-    ## return
-    if (any(class(res) == 'error'))
-        stop(res[[1]])
     return(res)
 
 }
