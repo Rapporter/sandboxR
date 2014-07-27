@@ -76,12 +76,10 @@ sandbox.pretest <- function(src, blacklist = as.character(unlist(commands.blackl
     lapply(p, function(c) {
 
         d <- deparse(c)
-        t <- textConnection(d)
-        s <- suppressWarnings(tryCatch(parser(t), error = function(e) NULL))
-        close(t)
-        if (is.null(nrow(attr(s, 'data'))))
+        s <- suppressWarnings(tryCatch(parse(text = d), error = function(e) e))
+        if (inherits(s, 'error'))
             stop(paste0('Parsing command (`', d, '`) failed, possible syntax error.'))
-        l <- attr(s, 'data')
+        l <- getParseData(s)
         f <- which(l$token.desc == 'SYMBOL_FUNCTION_CALL')
         calls <- l$text[f]
 
